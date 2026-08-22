@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 export const TripPackingTab = ({ trip }) => {
+  const tripId = trip?.id || trip?._id;
   const [packingList, setPackingList] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,10 +37,11 @@ export const TripPackingTab = ({ trip }) => {
   ];
 
   const fetchPackingList = async () => {
+    if (!tripId) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await packingApi.getByTrip(trip._id);
+      const res = await packingApi.getByTrip(tripId);
       setPackingList(res.data);
     } catch (err) {
       console.error("Failed to load packing list:", err);
@@ -50,16 +52,16 @@ export const TripPackingTab = ({ trip }) => {
   };
 
   useEffect(() => {
-    if (trip._id) fetchPackingList();
-  }, [trip._id]);
+    if (tripId) fetchPackingList();
+  }, [tripId]);
 
   const handleAddItem = async (e) => {
     e.preventDefault();
-    if (!newItemName.trim()) return;
+    if (!newItemName.trim() || !tripId) return;
     setAddError("");
     setAddLoading(true);
     try {
-      const res = await packingApi.addItem(trip._id, {
+      const res = await packingApi.addItem(tripId, {
         name: newItemName.trim(),
         category: newItemCategory,
       });
@@ -73,8 +75,9 @@ export const TripPackingTab = ({ trip }) => {
   };
 
   const handleToggle = async (itemId) => {
+    if (!tripId) return;
     try {
-      const res = await packingApi.toggleItem(trip._id, itemId);
+      const res = await packingApi.toggleItem(tripId, itemId);
       setPackingList(res.data);
     } catch (err) {
       console.error("Failed to toggle packing item:", err);
@@ -82,8 +85,9 @@ export const TripPackingTab = ({ trip }) => {
   };
 
   const handleDeleteItem = async (itemId) => {
+    if (!tripId) return;
     try {
-      const res = await packingApi.deleteItem(trip._id, itemId);
+      const res = await packingApi.deleteItem(tripId, itemId);
       setPackingList(res.data);
     } catch (err) {
       console.error("Failed to delete packing item:", err);
@@ -91,9 +95,10 @@ export const TripPackingTab = ({ trip }) => {
   };
 
   const handleApplyTemplate = async (templateName) => {
+    if (!tripId) return;
     setLoading(true);
     try {
-      const res = await packingApi.applyTemplate(trip._id, templateName);
+      const res = await packingApi.applyTemplate(tripId, templateName);
       setPackingList(res.data);
     } catch (err) {
       console.error("Failed to apply packing template:", err);
@@ -103,6 +108,7 @@ export const TripPackingTab = ({ trip }) => {
   };
 
   const handleClearAll = async () => {
+    if (!tripId) return;
     if (
       !window.confirm(
         "Are you sure you want to clear all items in this packing list?",
@@ -111,7 +117,7 @@ export const TripPackingTab = ({ trip }) => {
       return;
     }
     try {
-      const res = await packingApi.clearAll(trip._id);
+      const res = await packingApi.clearAll(tripId);
       setPackingList(res.data);
     } catch (err) {
       console.error("Failed to clear packing list:", err);
@@ -272,8 +278,8 @@ export const TripPackingTab = ({ trip }) => {
         <div className="bg-[#FFFFFF] border border-[#E5E2E1] rounded divide-y divide-[#EDE7DF] shadow-xs">
           {filteredItems.map((item) => (
             <div
-              key={item._id}
-              onClick={() => handleToggle(item._id)}
+              key={item.id || item._id}
+              onClick={() => handleToggle(item.id || item._id)}
               className={`p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:bg-[#F7F4EE] transition-colors ${
                 item.packed ? "bg-[#F7F4EE]/60" : ""
               }`}
@@ -313,7 +319,7 @@ export const TripPackingTab = ({ trip }) => {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDeleteItem(item._id);
+                  handleDeleteItem(item.id || item._id);
                 }}
                 className="text-[#899596] hover:text-[#BA1A1A] transition-colors p-1"
                 title="Delete item"
