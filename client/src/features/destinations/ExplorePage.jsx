@@ -194,46 +194,40 @@ export const ExplorePage = () => {
   );
 
   const defaultCuratedDestinations = [
-    {
-      _id: "jaipur",
-      name: "Jaipur",
-      state: "Rajasthan",
-      imageUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDAfnq0VBo3FZ9nKCt6lqkYkXkMIYPYXfSB8g-MkvhXQm-WQiFNv3o5gnvs0oe15uMp0yahwQi4WbxZJWu4rZqs4j-0Z8ZVLSaSmO2x2847ohAT5kpg2aG1W-_-DCu7muPtt3qS-7h99qV_Caomzeq2njg3zD8BhSD__ZbL0D1NYzUwJ6ebOeTHETxuj0ZJI_GqwlVk4rqZhb7SQpkYBjEH01oiKu_tYpbMR7zZxHREZSKmZZE0S6XUCg",
-      gridSpan: "md:col-span-8 h-[480px]",
-    },
-    {
-      _id: "kerala",
-      name: "Kerala",
-      state: "South India",
-      imageUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCZaWG-1I37o30-x7EMPUBOx8gxI6RvWQIUMhH_1jZG6dudLwDq8z0gukjByWNoCg6-2frqu8j8jHIhv50VLU2G3KWzyzhdjCkfPHvI7h4YnMzWoQL43RDx93ZHThdtXC8owpZg-1GSinW37ltxYK-5Z6k-ISB7TFGDq6jVutgnGwPoYAzOnryR3dYOZgrvlSZqEmXnehyx-QKgMYEQLJl_3dXsbXWjOh78ZWes_gntHGfZVJqNNTqKmg",
-      gridSpan: "md:col-span-4 h-[480px]",
-    },
-    {
-      _id: "goa",
-      name: "Goa",
-      state: "West Coast",
-      imageUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuC1HlmHFMnbrftuq8151JdqUBJcq_kkrv4bcTdxXYWoa1zO2pCkr4Sk6YPM90whHi-t2iNjolmhOkarRRb9MzOj3N3FDSpoxWucNqtD6W_uxPC8blfPD9xk1cdhiCarqqFk9Lo0H-vTJHOBu0TgpMJslVoWk1EvNWJci1RkFwva5Rd--kg1Puw1wGh84gLa-eVo-iXRJpfVsrgz6YFH1I04QcVpX-yBPy6U9tb5l9M2-leCnSKN5QbSoQ",
-      gridSpan: "md:col-span-4 h-[400px]",
-    },
-    {
-      _id: "varanasi",
-      name: "Varanasi",
-      state: "Uttar Pradesh",
-      imageUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAB1XtALEQrneuH0KhU7_s-2F5o7VLYETnd2Wdw9IVWt-6LqqaE2a7ZK8wrIYQgG171adUp1IxjE3bo6PX3ji6rf0HpUIDtBexWzUajhWrM1dr6m41rnOXSkZeoJQ61pRTCFgtgjNc5VpFfk_3_ALCIbhDGMw-9ivzLZmVpoO51_Hl1cuAN2Uuy-Y8x3DPldlGHZHN1arM-nPmyGCXJBTqqBlHyQCvIn3Zf0Iv3Sv4Dk-0_Uo_VnD5PGA",
-      gridSpan: "md:col-span-4 h-[400px]",
-    },
-    {
-      _id: "manali",
-      name: "Manali",
-      state: "Himachal Pradesh",
-      imageUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAerAQxqxzgJBiT-gJQQaWKf8X_NbfvMkZBIHn0SvVozFMx_DdbIjHN-duzejabsNNYHOVTgBhHxB73yKB9VbRX-AtBM55SQjNqSz2V8qQ3lZhgzEKwtbw-GUDe25LBS0kMDkHKfQ3Zp9lrJvzVpZbQQqE0Z0fPkAO7f6zM3YwFm2Cd7dPBxspEp55m310sct7XQ4Z6OOjnxHFH8Ofa2Lofo34pmM3bgBZQWn_u_SHLwWyiZTHAHgTVNQ",
-      gridSpan: "md:col-span-4 h-[400px]",
-    },
+    // North India
+    { _id: "jaipur", name: "Jaipur", state: "Rajasthan", zone: "North India", imageUrl: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "manali", name: "Manali", state: "Himachal Pradesh", zone: "North India", imageUrl: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "varanasi", name: "Varanasi", state: "Uttar Pradesh", zone: "North India", imageUrl: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "agra", name: "Agra", state: "Uttar Pradesh", zone: "North India", imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "leh-ladakh", name: "Leh Ladakh", state: "Ladakh", zone: "North India", imageUrl: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=1200&q=80" },
+
+    // South India
+    { _id: "kochi", name: "Kochi", state: "Kerala", zone: "South India", imageUrl: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "munnar", name: "Munnar", state: "Kerala", zone: "South India", imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "ooty", name: "Ooty", state: "Tamil Nadu", zone: "South India", imageUrl: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "hampi", name: "Hampi", state: "Karnataka", zone: "South India", imageUrl: "https://images.unsplash.com/photo-1600100397608-f010e423b971?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "pondicherry", name: "Pondicherry", state: "Puducherry", zone: "South India", imageUrl: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=1200&q=80" },
+
+    // Europe
+    { _id: "paris", name: "Paris", state: "France", zone: "Europe", imageUrl: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "rome", name: "Rome", state: "Italy", zone: "Europe", imageUrl: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "barcelona", name: "Barcelona", state: "Spain", zone: "Europe", imageUrl: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "amsterdam", name: "Amsterdam", state: "Netherlands", zone: "Europe", imageUrl: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "london", name: "London", state: "United Kingdom", zone: "Europe", imageUrl: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80" },
+
+    // Asia
+    { _id: "tokyo", name: "Tokyo", state: "Japan", zone: "Asia", imageUrl: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "bali", name: "Bali", state: "Indonesia", zone: "Asia", imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "bangkok", name: "Bangkok", state: "Thailand", zone: "Asia", imageUrl: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "singapore", name: "Singapore", state: "Singapore", zone: "Asia", imageUrl: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "kyoto", name: "Kyoto", state: "Japan", zone: "Asia", imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80" },
+
+    // Americas
+    { _id: "new-york", name: "New York", state: "USA", zone: "Americas", imageUrl: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "rio-de-janeiro", name: "Rio de Janeiro", state: "Brazil", zone: "Americas", imageUrl: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "cancun", name: "Cancún", state: "Mexico", zone: "Americas", imageUrl: "https://images.unsplash.com/photo-1510097467424-192d713fd8b2?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "san-francisco", name: "San Francisco", state: "USA", zone: "Americas", imageUrl: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" },
+    { _id: "buenos-aires", name: "Buenos Aires", state: "Argentina", zone: "Americas", imageUrl: "https://images.unsplash.com/photo-1589909202802-8f4aadce1849?auto=format&fit=crop&w=1200&q=80" },
   ];
 
   return (
@@ -241,11 +235,10 @@ export const ExplorePage = () => {
       {/* ── 1. HERO HEADER ── */}
       <header className="w-full px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto pt-32 pb-14 sm:pt-44 sm:pb-20 flex flex-col items-center text-center">
         <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-4 text-[#202525]">
-          Explore India
+          Explore Destinations
         </h1>
         <p className="text-base sm:text-lg text-[#54433A] max-w-xl mb-12">
-          Discover places worth remembering, from historic cities to peaceful
-          escapes.
+          Discover places worth remembering, from historic cities to peaceful global escapes.
         </p>
 
         {/* Search Bar with Submit & Clear Button */}
@@ -399,7 +392,7 @@ export const ExplorePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
               {(destinations.length > 0
                 ? destinations
-                : defaultCuratedDestinations
+                : defaultCuratedDestinations.filter(d => activeZone === "all" || activeZone === "popular" || d.zone === activeZone)
               ).map((dest, idx) => {
                 const isLarge = idx % 5 === 0;
                 const spanClass = isLarge

@@ -161,8 +161,13 @@ function validateJwtSecret() {
 
 validateJwtSecret();
 
+const autoSeedDestinations = require("./utils/seedDestinations");
+
 sequelize.sync({ alter: true })
-  .then(() => console.log('Connected to MySQL & sync complete'))
+  .then(async () => {
+    console.log('Connected to MySQL & sync complete');
+    await autoSeedDestinations();
+  })
   .catch((err) => console.error('Could not connect to MySQL', err));
 
 
