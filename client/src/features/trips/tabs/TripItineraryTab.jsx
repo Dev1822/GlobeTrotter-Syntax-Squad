@@ -38,12 +38,53 @@ export const TripItineraryTab = ({ trip, onTripUpdated }) => {
     }
   };
 
+  const handleMoveStop = async (index, direction) => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= stops.length) return;
+
+    const newStops = [...stops];
+    const temp = newStops[index];
+    newStops[index] = newStops[targetIndex];
+    newStops[targetIndex] = temp;
+
+    const payloadStops = newStops.map((s, i) => ({ id: s.id || s._id, orderIndex: i }));
+    try {
+      await tripsApi.reorderStops(trip.id || trip._id, payloadStops);
+      onTripUpdated({ ...trip, stops: newStops });
+    } catch (err) {
+      console.error("Reorder stops failed:", err);
+    }
+  };
+
   const renderListView = () => (
     <div className="space-y-8 mt-6">
-      {stops.map(stop => (
-        <div key={stop.id} className="border border-[#E5E2E1] rounded bg-white overflow-hidden shadow-sm">
+      {stops.map((stop, idx) => (
+        <div key={stop.id || stop._id || idx} className="border border-[#E5E2E1] rounded bg-white overflow-hidden shadow-sm">
           <div className="bg-[#F6F3F2] p-4 border-b border-[#E5E2E1] flex items-center justify-between">
-            <h4 className="font-serif text-xl font-bold text-[#202525]">{stop.city}</h4>
+            <div className="flex items-center gap-3">
+              <h4 className="font-serif text-xl font-bold text-[#202525]">{stop.city}</h4>
+              <div className="flex items-center gap-1 bg-[#EDE7DF] rounded px-2 py-0.5 text-xs text-[#54433A]">
+                <button
+                  type="button"
+                  onClick={() => handleMoveStop(idx, "up")}
+                  disabled={idx === 0}
+                  className="hover:text-[#163A3D] disabled:opacity-30 disabled:cursor-not-allowed font-bold"
+                  title="Move stop up"
+                >
+                  ▲
+                </button>
+                <span className="text-[10px] text-[#899596]">Reorder</span>
+                <button
+                  type="button"
+                  onClick={() => handleMoveStop(idx, "down")}
+                  disabled={idx === stops.length - 1}
+                  className="hover:text-[#163A3D] disabled:opacity-30 disabled:cursor-not-allowed font-bold"
+                  title="Move stop down"
+                >
+                  ▼
+                </button>
+              </div>
+            </div>
             <span className="text-xs text-[#54433A]">
               {stop.startDate ? format(parseISO(stop.startDate), 'MMM d') : ''} - {stop.endDate ? format(parseISO(stop.endDate), 'MMM d') : ''}
             </span>

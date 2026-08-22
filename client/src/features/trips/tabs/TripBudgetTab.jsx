@@ -239,10 +239,52 @@ export const TripBudgetTab = ({ trip, onTripUpdated }) => {
     return exp.category === selectedCategory;
   });
 
+  const getTripDays = () => {
+    if (!trip?.startDate || !trip?.endDate) return 1;
+    const start = new Date(trip.startDate);
+    const end = new Date(trip.endDate);
+    const diffTime = Math.abs(end - start);
+    return Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1);
+  };
+
+  const tripDays = getTripDays();
+  const avgCostPerDay = Math.round(totalSpent / tripDays);
+  const dailyTargetBudget = plannedBudget > 0 ? plannedBudget / tripDays : 0;
+
+  const dailyExpensesMap = {};
+  expenses.forEach(exp => {
+    const dKey = exp.date ? exp.date.split("T")[0] : "Unscheduled";
+    dailyExpensesMap[dKey] = (dailyExpensesMap[dKey] || 0) + (Number(exp.amount) || 0);
+  });
+
+  const overbudgetDays = Object.entries(dailyExpensesMap).filter(([dKey, amount]) => {
+    return dailyTargetBudget > 0 && amount > dailyTargetBudget && dKey !== "Unscheduled";
+  });
+
   return (
     <div className="space-y-10">
+      {/* ── OVERBUDGET DAYS ALERT BANNER ── */}
+      {overbudgetDays.length > 0 && (
+        <div className="p-4 bg-[#FFDAD6]/60 border border-[#BA1A1A]/40 rounded-md flex items-start gap-3 text-xs text-[#BA1A1A]">
+          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-bold text-sm">Overbudget Days Detected ({overbudgetDays.length})</h4>
+            <p className="mt-1 leading-relaxed">
+              Daily spending exceeded the target daily threshold of <strong>₹{Math.round(dailyTargetBudget).toLocaleString("en-IN")}/day</strong> on the following dates:
+            </p>
+            <ul className="mt-2 space-y-1 list-disc list-inside">
+              {overbudgetDays.map(([dateKey, amt]) => (
+                <li key={dateKey}>
+                  <strong>{dateKey}</strong>: Expended ₹{amt.toLocaleString("en-IN")} (Exceeded by ₹{Math.round(amt - dailyTargetBudget).toLocaleString("en-IN")})
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
       {/* ── 1. BUDGET METRICS CARDS ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
         {/* Planned Target Budget */}
         <div className="bg-[#FFFFFF] p-6 border border-[#E5E2E1] rounded shadow-xs relative flex flex-col justify-between">
           <div>
@@ -261,7 +303,7 @@ export const TripBudgetTab = ({ trip, onTripUpdated }) => {
               </button>
             </div>
 
-            <p className="font-serif text-3xl font-bold text-[#202525] mt-2">
+            <p className="font-serif text-2xl font-bold text-[#202525] mt-2">
               ₹{plannedBudget.toLocaleString("en-IN")}
             </p>
           </div>
@@ -278,7 +320,7 @@ export const TripBudgetTab = ({ trip, onTripUpdated }) => {
             <span className="text-xs font-semibold uppercase text-[#163A3D]">
               Total Expended
             </span>
-            <p className="font-serif text-3xl font-bold text-[#163A3D] mt-2">
+            <p className="font-serif text-2xl font-bold text-[#163A3D] mt-2">
               ₹{totalSpent.toLocaleString("en-IN")}
             </p>
 
@@ -309,7 +351,7 @@ export const TripBudgetTab = ({ trip, onTripUpdated }) => {
               Remaining Balance
             </span>
             <p
-              className={`font-serif text-3xl font-bold mt-2 ${
+              className={`font-serif text-2xl font-bold mt-2 ${
                 budgetRemaining < 0 ? "text-[#BA1A1A]" : "text-[#2E4632]"
               }`}
             >
@@ -320,8 +362,23 @@ export const TripBudgetTab = ({ trip, onTripUpdated }) => {
             {plannedBudget === 0
               ? "Set target budget above"
               : budgetRemaining < 0
-              ? `Exceeded budget limit by ₹${Math.abs(budgetRemaining).toLocaleString("en-IN")}`
+              ? `Exceeded budget limit`
               : "Within safety budget buffer"}
+          </p>
+        </div>
+
+        {/* Average Cost Per Day */}
+        <div className="bg-[#FFFFFF] p-6 border border-[#E5E2E1] rounded shadow-xs flex flex-col justify-between">
+          <div>
+            <span className="text-xs font-semibold uppercase text-[#899596]">
+              Avg Cost / Day
+            </span>
+            <p className="font-serif text-2xl font-bold text-[#202525] mt-2">
+              ₹{avgCostPerDay.toLocaleString("en-IN")}
+            </p>
+          </div>
+          <p className="text-[11px] text-[#54433A] mt-3 pt-2 border-t border-[#EDE7DF]">
+            Based on {tripDays} day{tripDays > 1 ? "s" : ""} trip duration
           </p>
         </div>
       </div>

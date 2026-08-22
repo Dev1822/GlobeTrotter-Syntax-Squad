@@ -23,6 +23,8 @@ export const ProfilePage = () => {
 
   // Name form state
   const [name, setName] = useState(user?.name || "");
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
+  const [languagePref, setLanguagePref] = useState("English");
   const [nameLoading, setNameLoading] = useState(false);
   const [nameSuccess, setNameSuccess] = useState(false);
   const [nameError, setNameError] = useState("");
@@ -263,6 +265,32 @@ export const ProfilePage = () => {
               required
             />
 
+            <FormField
+              label="Profile Photo / Avatar Image URL"
+              name="avatarUrl"
+              value={avatarUrl}
+              onChange={(e) => setAvatarUrl(e.target.value)}
+              placeholder="https://images.unsplash.com/photo-..."
+              helperText="URL to your personal traveler avatar photo"
+            />
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-[0.1em] text-[#54433A] mb-1">
+                Preferred Language
+              </label>
+              <select
+                value={languagePref}
+                onChange={(e) => setLanguagePref(e.target.value)}
+                className="w-full bg-[#F6F3F2] border border-[#E5E2E1] rounded p-3 text-xs text-[#202525]"
+              >
+                <option value="English">English (United States / India)</option>
+                <option value="Hindi">Hindi (हिंदी)</option>
+                <option value="French">French (Français)</option>
+                <option value="Spanish">Spanish (Español)</option>
+                <option value="German">German (Deutsch)</option>
+              </select>
+            </div>
+
             {/* Email with 2FA Update Trigger */}
             <div className="pt-2">
               <label className="block text-xs font-semibold uppercase tracking-[0.1em] text-[#54433A] mb-1">
@@ -296,10 +324,33 @@ export const ProfilePage = () => {
                 size="md"
                 loading={nameLoading}
               >
-                Save Name
+                Save Profile
               </Button>
             </div>
           </form>
+        </div>
+
+        {/* ── SAVED DESTINATIONS CARD ── */}
+        <div className="bg-[#FFFFFF] p-8 sm:p-10 border border-[#CBD5D6] rounded-md shadow-xs space-y-6">
+          <h3 className="font-serif text-2xl font-bold text-[#202525] flex items-center justify-between">
+            <span>Saved & Favorited Destinations</span>
+            <span className="text-xs font-sans font-semibold uppercase tracking-wider text-[#899596]">3 Bookmarked</span>
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div className="p-4 border border-[#E5E2E1] rounded bg-[#F6F3F2] space-y-1">
+              <h4 className="font-bold text-sm text-[#202525]">Udaipur, Rajasthan</h4>
+              <p className="text-[#899596]">City of Lakes & Palaces</p>
+            </div>
+            <div className="p-4 border border-[#E5E2E1] rounded bg-[#F6F3F2] space-y-1">
+              <h4 className="font-bold text-sm text-[#202525]">Buenos Aires, Argentina</h4>
+              <p className="text-[#899596]">Paris of South America</p>
+            </div>
+            <div className="p-4 border border-[#E5E2E1] rounded bg-[#F6F3F2] space-y-1">
+              <h4 className="font-bold text-sm text-[#202525]">Tokyo, Japan</h4>
+              <p className="text-[#899596]">Futuristic Metropolis</p>
+            </div>
+          </div>
         </div>
 
         {/* ── 2. SECURITY & PASSWORD CARD ── */}

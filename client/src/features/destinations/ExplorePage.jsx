@@ -418,9 +418,14 @@ export const ExplorePage = () => {
                       <h4 className="font-serif text-3xl sm:text-4xl font-bold">
                         {dest.name}
                       </h4>
-                      <p className="text-xs text-[#E8895B] font-semibold uppercase tracking-widest mt-1.5 mb-3">
-                        {dest.state || dest.zone || "India"}
-                      </p>
+                      <div className="flex items-center gap-2 mt-1.5 mb-3">
+                        <span className="text-xs text-[#E8895B] font-semibold uppercase tracking-widest">
+                          {dest.state || dest.zone || "India"}
+                        </span>
+                        <span className="bg-white/20 text-white font-mono text-[11px] font-bold px-2 py-0.5 rounded backdrop-blur-xs">
+                          {dest.costIndex || "$$"}
+                        </span>
+                      </div>
                       <button 
                         onClick={(e) => handleAddClick(e, dest)} 
                         className="bg-white/20 hover:bg-white text-white hover:text-[#202525] text-xs font-semibold px-4 py-2 rounded backdrop-blur-sm transition-all"

@@ -10,6 +10,10 @@ const Trip = sequelize.define('Trip', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  coverImage: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   startDate: {
     type: DataTypes.DATE,
     allowNull: false

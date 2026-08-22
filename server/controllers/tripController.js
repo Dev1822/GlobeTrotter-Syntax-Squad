@@ -65,13 +65,14 @@ exports.getTrip = async (req, res) => {
 
 exports.createTrip = async (req, res) => {
   try {
-    const { name, destination, startDate, endDate, description, budget, status, stops } = req.body;
+    const { name, destination, coverImage, startDate, endDate, description, budget, status, stops } = req.body;
     const dest = destination?.trim() || name?.trim() || "Destination";
     const tripName = name?.trim() || dest;
     const trip = await Trip.create({
       userId: req.user.id,
       name: tripName,
       destination: dest,
+      coverImage: coverImage || null,
       startDate,
       endDate,
       description,
@@ -226,5 +227,67 @@ exports.getSharedTrip = async (req, res) => {
     res.json(trip);
   } catch (err) {
     res.status(500).send('Server error');
+  }
+};
+
+exports.copyTrip = async (req, res) => {
+  try {
+    const original = await Trip.findOne({
+      where: { id: req.params.id },
+      include: [{ model: TripStop, as: 'stops', include: [{ model: TripActivity, as: 'activities' }] }]
+    });
+
+    if (!original) {
+      return res.status(404).json({ msg: "Source trip not found" });
+    }
+
+    const newTrip = await Trip.create({
+      userId: req.user.id,
+      name: `${original.name} (Copy)`,
+      destination: original.destination,
+      coverImage: original.coverImage,
+      startDate: original.startDate,
+      endDate: original.endDate,
+      description: original.description,
+      budget: original.budget,
+      status: 'planned'
+    });
+
+    if (original.stops && original.stops.length > 0) {
+      for (const stop of original.stops) {
+        const newStop = await TripStop.create({
+          tripId: newTrip.id,
+          city: stop.city,
+          startDate: stop.startDate,
+          endDate: stop.endDate,
+          orderIndex: stop.orderIndex
+        });
+
+        if (stop.activities && stop.activities.length > 0) {
+          for (const act of stop.activities) {
+            await TripActivity.create({
+              stopId: newStop.id,
+              name: act.name,
+              date: act.date,
+              startTime: act.startTime,
+              endTime: act.endTime,
+              cost: act.cost,
+              location: act.location,
+              notes: act.notes,
+              orderIndex: act.orderIndex
+            });
+          }
+        }
+      }
+    }
+
+    const created = await Trip.findByPk(newTrip.id, {
+      include: [{ model: TripStop, as: 'stops', include: [{ model: TripActivity, as: 'activities' }] }]
+    });
+
+    res.json(created);
+  } catch (err) {
+    console.error("copyTrip error:", err);
+    res.status(500).json({ msg: "Failed to copy trip" });
   }
 };

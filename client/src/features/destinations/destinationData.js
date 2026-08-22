@@ -526,6 +526,7 @@ export function getDestinationDetails(rawId, apiData) {
     description: apiData?.description || `${displayName} offers an unforgettable travel experience filled with iconic landmarks, rich local culture, and memorable discoveries.`,
     bestSeason: "Year-round",
     idealFor: "Sightseeing, Culture, Discovery",
+    costIndex: apiData?.costIndex || "$$",
     lat: 20.0,
     lon: 0.0,
     heroImage: apiData?.imageUrl || `https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80`,

@@ -22,6 +22,7 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
   const [noticeModal, setNoticeModal] = useState({ isOpen: false, title: "", message: "", isError: false });
   
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedDuration, setSelectedDuration] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
 
   const categories = [
@@ -31,6 +32,13 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
     { id: "BEACH_PARK", label: "Nature & Parks" },
     { id: "RESTAURANT", label: "Culinary" },
     { id: "SHOPPING", label: "Bazaars" },
+  ];
+
+  const durationOptions = [
+    { id: "all", label: "Any Duration" },
+    { id: "short", label: "< 1 Hr Quick Sight" },
+    { id: "medium", label: "1 - 3 Hrs Standard" },
+    { id: "long", label: "Half Day (4+ Hrs)" },
   ];
 
   const fetchPlaces = async (cats = [], price = "") => {
@@ -150,9 +158,23 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold text-[#899596]">Max Price (₹):</span>
-            <input type="number" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="border border-[#CBD5D6] rounded px-2 py-1 w-24" placeholder="Any" />
+          <div className="flex flex-wrap items-center gap-4 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-[#899596]">Est. Duration:</span>
+              <select
+                value={selectedDuration}
+                onChange={e => setSelectedDuration(e.target.value)}
+                className="bg-[#FFFFFF] border border-[#CBD5D6] rounded px-2 py-1 text-xs text-[#202525]"
+              >
+                {durationOptions.map(d => (
+                  <option key={d.id} value={d.id}>{d.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-[#899596]">Max Price (₹):</span>
+              <input type="number" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="border border-[#CBD5D6] rounded px-2 py-1 w-24 bg-white" placeholder="Any" />
+            </div>
           </div>
         </div>
       </div>

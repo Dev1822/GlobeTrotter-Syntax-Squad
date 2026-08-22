@@ -72,11 +72,14 @@ export const TripCard = ({ trip }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#202525]/70 via-transparent to-transparent opacity-80" />
 
-        {/* Status Badge */}
-        <div className="absolute top-4 left-4">
+        {/* Status & Destination Count Badge */}
+        <div className="absolute top-4 left-4 flex gap-2 items-center">
           <Badge variant={status} size="xs" className="capitalize">
             {status}
           </Badge>
+          <span className="bg-[#163A3D]/90 backdrop-blur-md px-2.5 py-1 rounded text-[10px] font-semibold uppercase tracking-wider text-[#F7F4EE]">
+            {stops.length > 0 ? `${stops.length} Stop${stops.length > 1 ? 's' : ''}` : '1 Destination'}
+          </span>
         </div>
 
         {/* Days badge */}

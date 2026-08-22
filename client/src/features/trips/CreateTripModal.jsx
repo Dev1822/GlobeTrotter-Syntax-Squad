@@ -13,6 +13,7 @@ export const CreateTripModal = ({
 }) => {
   const [formData, setFormData] = useState({
     destination: initialDestination,
+    coverImage: "",
     startDate: "",
     endDate: "",
     budget: "",
@@ -80,6 +81,7 @@ export const CreateTripModal = ({
     const payload = {
       name: formData.destination.trim(),
       destination: formData.destination.trim(),
+      coverImage: formData.coverImage.trim() || undefined,
       startDate: formData.startDate,
       endDate: formData.endDate,
       description: formData.description.trim(),
@@ -307,6 +309,26 @@ export const CreateTripModal = ({
               }
               placeholder="Notes about travel companions, preferred pace, must-see places..."
               className="w-full bg-transparent border-0 border-b border-[#CBD5D6] py-3 text-base text-[#202525] placeholder-[#899596]/50 focus:ring-0 focus:border-[#163A3D] transition-colors resize-none"
+            />
+          </div>
+
+          {/* Cover Photo URL (Optional) */}
+          <div>
+            <label
+              className="block text-xs font-semibold uppercase tracking-wider text-[#899596] mb-1"
+              htmlFor="trip-cover-photo"
+            >
+              Custom Cover Photo URL (Optional)
+            </label>
+            <input
+              id="trip-cover-photo"
+              type="url"
+              value={formData.coverImage}
+              onChange={(e) =>
+                setFormData({ ...formData, coverImage: e.target.value })
+              }
+              placeholder="https://images.unsplash.com/photo-..."
+              className="w-full bg-transparent border-0 border-b border-[#CBD5D6] py-3 text-base text-[#202525] placeholder-[#899596]/50 focus:ring-0 focus:border-[#163A3D] transition-colors"
             />
           </div>
 

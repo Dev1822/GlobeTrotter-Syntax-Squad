@@ -16,5 +16,6 @@ router.post("/stops/:stopId/activities", auth, tripController.addActivity);
 
 router.post("/:id/share", auth, tripController.shareTrip);
 router.put("/:id/share-toggle", auth, tripController.toggleTripSharing);
+router.post("/:id/copy", auth, tripController.copyTrip);
 
 module.exports = router;

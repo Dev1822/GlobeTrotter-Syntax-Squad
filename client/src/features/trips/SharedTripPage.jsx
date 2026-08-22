@@ -114,6 +114,26 @@ export const SharedTripPage = () => {
     });
   };
 
+  const [copying, setCopying] = useState(false);
+
+  const handleCopyTrip = async () => {
+    setCopying(true);
+    try {
+      const res = await tripsApi.copyTrip(trip.id || trip._id);
+      alert(`Itinerary copied to your personal journeys!`);
+      const newId = res.data?.id || res.data?._id;
+      window.location.href = `/trips/${newId}`;
+    } catch (err) {
+      console.error("Copy trip error:", err);
+      alert(getErrorMessage(err, "Please log in to copy this trip to your account."));
+    } finally {
+      setCopying(false);
+    }
+  };
+
+  const currentUrl = encodeURIComponent(window.location.href);
+  const shareTitle = encodeURIComponent(`Check out this travel itinerary for ${destination} on GlobeTrotter!`);
+
   return (
     <div className="min-h-screen bg-[#F7F4EE] pb-24">
       {/* Hero Banner */}
@@ -125,26 +145,82 @@ export const SharedTripPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#202525]/90 via-[#202525]/50 to-transparent" />
 
-        <div className="absolute bottom-8 left-4 sm:left-8 right-4 sm:right-8 max-w-7xl mx-auto text-white">
-          <div className="flex items-center space-x-2 mb-2">
-            <Badge variant="terracotta" size="xs">
-              <Globe className="w-3 h-3 mr-1" />
-              Shared Journey Itinerary
-            </Badge>
-            <Badge variant={status} size="xs" className="capitalize">
-              {status}
-            </Badge>
+        <div className="absolute bottom-8 left-4 sm:left-8 right-4 sm:right-8 max-w-7xl mx-auto text-white flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center space-x-2 mb-2">
+              <Badge variant="terracotta" size="xs">
+                <Globe className="w-3 h-3 mr-1" />
+                Shared Journey Itinerary
+              </Badge>
+              <Badge variant={status} size="xs" className="capitalize">
+                {status}
+              </Badge>
+            </div>
+
+            <h1 className="font-serif text-3xl sm:text-5xl font-bold leading-tight">
+              Expedition to {destination}
+            </h1>
+
+            <div className="flex items-center text-xs sm:text-sm text-[#E8895B] mt-2 space-x-2">
+              <Calendar className="w-4 h-4 mr-1" />
+              <span>
+                {formatDate(startDate)} — {formatDate(endDate)}
+              </span>
+            </div>
           </div>
 
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold leading-tight">
-            Expedition to {destination}
-          </h1>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleCopyTrip}
+              disabled={copying}
+              className="bg-[#E8895B] hover:bg-[#D7784A] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded transition-colors shadow-md disabled:opacity-50 cursor-pointer"
+            >
+              {copying ? "Copying..." : "📋 Copy Trip to My Journeys"}
+            </button>
+          </div>
+        </div>
+      </div>
 
-          <div className="flex items-center text-xs sm:text-sm text-[#E8895B] mt-2 space-x-2">
-            <Calendar className="w-4 h-4 mr-1" />
-            <span>
-              {formatDate(startDate)} — {formatDate(endDate)}
-            </span>
+      {/* Social Media Share Bar */}
+      <div className="bg-[#FFFFFF] border-b border-[#E5E2E1] py-3 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+          <span className="font-semibold text-[#899596] uppercase tracking-wider">
+            Share this Itinerary:
+          </span>
+          <div className="flex items-center gap-2">
+            <a
+              href={`https://api.whatsapp.com/send?text=${shareTitle}%20${currentUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#25D366] text-white px-3 py-1 rounded font-semibold text-[11px] hover:opacity-90 transition-opacity"
+            >
+              WhatsApp
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${shareTitle}&url=${currentUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#1DA1F2] text-white px-3 py-1 rounded font-semibold text-[11px] hover:opacity-90 transition-opacity"
+            >
+              Twitter / X
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#4267B2] text-white px-3 py-1 rounded font-semibold text-[11px] hover:opacity-90 transition-opacity"
+            >
+              Facebook
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#0077B5] text-white px-3 py-1 rounded font-semibold text-[11px] hover:opacity-90 transition-opacity"
+            >
+              LinkedIn
+            </a>
           </div>
         </div>
       </div>

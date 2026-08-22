@@ -13,6 +13,7 @@ export const tripsApi = {
   generateShareLink: (id) => apiClient.post(`/trips/${id}/share`),
   toggleSharing: (id) => apiClient.put(`/trips/${id}/share-toggle`),
   getSharedTrip: (token) => apiClient.get(`/trips/share/${token}`),
+  copyTrip: (id) => apiClient.post(`/trips/${id}/copy`),
 };
 
 export default tripsApi;
