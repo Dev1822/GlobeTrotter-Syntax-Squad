@@ -5,7 +5,6 @@ const TripStop = require('./TripStop');
 const TripActivity = require('./TripActivity');
 const Destination = require('./Destination');
 const Expense = require('./Expense');
-const PackingList = require('./PackingList');
 
 // Define associations
 
@@ -29,14 +28,6 @@ Expense.belongsTo(Trip, { foreignKey: 'tripId', as: 'trip' });
 User.hasMany(Expense, { foreignKey: 'payerId', as: 'paidExpenses' });
 Expense.belongsTo(User, { foreignKey: 'payerId', as: 'payer' });
 
-// Trip <-> PackingList
-Trip.hasOne(PackingList, { foreignKey: 'tripId', as: 'packingList', onDelete: 'CASCADE' });
-PackingList.belongsTo(Trip, { foreignKey: 'tripId', as: 'trip' });
-
-// User <-> PackingList
-User.hasMany(PackingList, { foreignKey: 'userId', as: 'packingLists', onDelete: 'CASCADE' });
-PackingList.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-
 module.exports = {
   sequelize,
   User,
@@ -44,6 +35,5 @@ module.exports = {
   TripStop,
   TripActivity,
   Destination,
-  Expense,
-  PackingList
+  Expense
 };

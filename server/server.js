@@ -102,7 +102,6 @@ const expenseRoutes = require("./routes/expenses");
 const translatorRoutes = require("./routes/translator");
 const bookingRoutes = require("./routes/booking");
 const destinationRoutes = require("./routes/destinations");
-const packingRoutes = require("./routes/packing");
 const adminRoutes = require("./routes/admin");
 
 // Use routes
@@ -113,7 +112,6 @@ app.use("/api/expenses", expenseRoutes);
 app.use("/api/translator", translatorRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/destinations", destinationRoutes);
-app.use("/api/packing", packingRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Base route

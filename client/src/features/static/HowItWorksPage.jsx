@@ -95,8 +95,7 @@ export const HowItWorksPage = () => {
               Keep your journey together.
             </h2>
             <p className="text-base text-[#54433A] leading-relaxed">
-              Organize your itinerary, saved places, real-time expenses, packing
-              lists, live weather forecasts, and trip notes from one intuitive
+              Organize your itinerary, saved places, real-time expenses, live weather forecasts, and trip notes from one intuitive
               interface.
             </p>
           </div>

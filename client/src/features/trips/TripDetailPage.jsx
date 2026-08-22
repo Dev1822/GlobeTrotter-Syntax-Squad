@@ -18,7 +18,6 @@ import TripStopsTab from "./tabs/TripStopsTab";
 import TripItineraryTab from "./tabs/TripItineraryTab";
 import TripPlacesTab from "./tabs/TripPlacesTab";
 import TripBudgetTab from "./tabs/TripBudgetTab";
-import TripPackingTab from "./tabs/TripPackingTab";
 import TripWeatherTab from "./tabs/TripWeatherTab";
 import TripNotesTab from "./tabs/TripNotesTab";
 import { getDestinationDetails } from "../destinations/destinationData";
@@ -170,7 +169,6 @@ export const TripDetailPage = () => {
     { id: "itinerary", label: "Itinerary" },
     { id: "places", label: "Places" },
     { id: "budget", label: "Budget & Expenses" },
-    { id: "packing", label: "Packing" },
     { id: "weather", label: "Weather" },
     { id: "notes", label: "Notes" },
   ];
@@ -279,7 +277,6 @@ export const TripDetailPage = () => {
         )}
         {activeTab === "places" && <TripPlacesTab trip={trip} />}
         {activeTab === "budget" && <TripBudgetTab trip={trip} />}
-        {activeTab === "packing" && <TripPackingTab trip={trip} />}
         {activeTab === "weather" && <TripWeatherTab trip={trip} />}
         {activeTab === "notes" && (
           <TripNotesTab trip={trip} onTripUpdated={setTrip} />

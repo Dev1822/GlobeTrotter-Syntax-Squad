@@ -128,7 +128,7 @@ const howItWorksSteps = [
   },
   {
     num: "03", title: "Travel",
-    description: "Access your full plan on the go. Use translation tools, weather forecasts, and packing checklists so you can focus on experiencing every moment.",
+    description: "Access your full plan on the go. Use translation tools, weather forecasts, and itinerary tools so you can focus on experiencing every moment.",
     img: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=1000&q=85",
     icon: <Plane className="w-6 h-6" />,
   },
@@ -420,7 +420,7 @@ export const HomePage = () => {
             {[
               { num: "01", title: "Discover", desc: "Explore curated destinations from every continent. Get inspired with travel stories and high-quality visual guides from around the world." },
               { num: "02", title: "Organize", desc: "Build structured itineraries, manage transit and stay, set daily budgets, and keep everything organized in a single beautiful dashboard." },
-              { num: "03", title: "Experience", desc: "Access your plans on-the-go. Language translation, live weather, packing lists — everything you need to immerse in the moment." },
+              { num: "03", title: "Experience", desc: "Access your plans on-the-go. Language translation, live weather, travel tools — everything you need to immerse in the moment." },
             ].map((item, i) => (
               <ScrollReveal key={i} delay={i * 0.15}>
                 <motion.div

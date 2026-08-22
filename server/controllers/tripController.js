@@ -1,4 +1,4 @@
-const { Trip, TripStop, TripActivity, Expense, PackingList } = require("../models");
+const { Trip, TripStop, TripActivity, Expense } = require("../models");
 
 exports.getTrips = async (req, res) => {
   try {

@@ -255,7 +255,7 @@ export const SharedTripPage = () => {
           </h3>
           <p className="text-xs sm:text-sm text-[#CBD5D6] max-w-lg mx-auto mb-6">
             Chart your own bespoke journey across India with GlobeTrotter's curated
-            destinations, budget tracking, and packing tools.
+            destinations, budget tracking, and itinerary tools.
           </p>
           <Link to="/register">
             <Button variant="terracotta" size="md">
