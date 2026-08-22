@@ -24,6 +24,10 @@ TripActivity.belongsTo(TripStop, { foreignKey: 'stopId', as: 'stop' });
 Trip.hasMany(Expense, { foreignKey: 'tripId', as: 'expenses', onDelete: 'CASCADE' });
 Expense.belongsTo(Trip, { foreignKey: 'tripId', as: 'trip' });
 
+// User <-> Expense (owner)
+User.hasMany(Expense, { foreignKey: 'userId', as: 'expenses', onDelete: 'CASCADE' });
+Expense.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 // User <-> Expense (payer)
 User.hasMany(Expense, { foreignKey: 'payerId', as: 'paidExpenses' });
 Expense.belongsTo(User, { foreignKey: 'payerId', as: 'payer' });

@@ -2,18 +2,39 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Expense = sequelize.define('Expense', {
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  payerId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  tripId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   description: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true,
+    defaultValue: 'Expense'
   },
   amount: {
     type: DataTypes.FLOAT,
     allowNull: false
   },
-  category: DataTypes.STRING,
+  currency: {
+    type: DataTypes.STRING,
+    defaultValue: 'INR'
+  },
+  category: {
+    type: DataTypes.STRING,
+    defaultValue: 'Other'
+  },
   date: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
   }
 });
+
 module.exports = Expense;
