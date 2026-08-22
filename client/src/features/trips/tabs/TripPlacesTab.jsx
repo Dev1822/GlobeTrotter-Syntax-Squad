@@ -6,8 +6,9 @@ import Badge from "../../../components/Badge";
 import Button from "../../../components/Button";
 import LoadingState from "../../../components/LoadingState";
 import EmptyState from "../../../components/EmptyState";
+import Modal from "../../../components/Modal";
 import {
-  Compass, MapPin, ExternalLink, Star, Banknote, Search, Filter, Plus
+  Compass, MapPin, ExternalLink, Star, Banknote, Search, Filter, Plus, CheckCircle2, AlertCircle
 } from "lucide-react";
 
 export const TripPlacesTab = ({ trip, onTripUpdated }) => {
@@ -17,6 +18,8 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [noticeModal, setNoticeModal] = useState({ isOpen: false, title: "", message: "", isError: false });
   
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
@@ -94,10 +97,20 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
         onTripUpdated({ ...trip, stops: updatedStops });
       }
 
-      alert(`"${place.name}" added to your itinerary! Check the Itinerary tab to view or reschedule it.`);
+      setNoticeModal({
+        isOpen: true,
+        title: "Added to Itinerary",
+        message: `"${place.name}" has been added to your itinerary! Check the Itinerary tab to view or reschedule it.`,
+        isError: false,
+      });
     } catch (err) {
       console.error("Failed to add activity:", err);
-      alert(getErrorMessage(err, "Failed to add activity to itinerary"));
+      setNoticeModal({
+        isOpen: true,
+        title: "Could Not Add Activity",
+        message: getErrorMessage(err, "Failed to add activity to itinerary."),
+        isError: true,
+      });
     }
   };
 
@@ -202,6 +215,44 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
         </div>
       ) : (
         <EmptyState icon={Compass} title="No Landmarks Found" description="We could not identify cataloged landmarks matching the criteria." actionLabel="Clear Filters" onAction={() => { setSelectedCategory("all"); setMaxPrice(""); }} />
+      )}
+
+      {/* ── PROJECT-STYLED NOTICE MODAL ── */}
+      {noticeModal.isOpen && (
+        <Modal
+          isOpen={noticeModal.isOpen}
+          onClose={() => setNoticeModal({ ...noticeModal, isOpen: false })}
+          title={noticeModal.title}
+          maxWidth="max-w-md"
+        >
+          <div className="text-center space-y-6 py-2">
+            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${
+              noticeModal.isError 
+                ? "bg-[#FFDAD6] text-[#BA1A1A]" 
+                : "bg-[#163A3D]/10 text-[#163A3D]"
+            }`}>
+              {noticeModal.isError ? (
+                <AlertCircle className="w-8 h-8 text-[#BA1A1A]" />
+              ) : (
+                <CheckCircle2 className="w-8 h-8 text-[#163A3D]" />
+              )}
+            </div>
+
+            <p className="text-sm text-[#54433A] leading-relaxed max-w-sm mx-auto font-sans">
+              {noticeModal.message}
+            </p>
+
+            <div className="pt-2">
+              <Button
+                variant={noticeModal.isError ? "outline" : "terracotta"}
+                onClick={() => setNoticeModal({ ...noticeModal, isOpen: false })}
+                className="w-full"
+              >
+                Okay, Understood
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   );
