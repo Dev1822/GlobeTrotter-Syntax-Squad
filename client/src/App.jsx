@@ -11,7 +11,6 @@ import HomePage from "./features/static/HomePage";
 
 // Lazy-loaded routes for performance & code-splitting
 const HowItWorksPage = lazy(() => import("./features/static/HowItWorksPage"));
-const ContactHelpPage = lazy(() => import("./features/static/ContactHelpPage"));
 const NotFoundPage = lazy(() => import("./features/static/NotFoundPage"));
 
 const LoginPage = lazy(() => import("./features/auth/LoginPage"));
@@ -72,8 +71,6 @@ export function App() {
                   element={<DestinationDetailPage />}
                 />
                 <Route path="/how-it-works" element={<HowItWorksPage />} />
-                <Route path="/contact" element={<ContactHelpPage />} />
-                <Route path="/help" element={<ContactHelpPage />} />
                 <Route path="/share/:token" element={<SharedTripPage />} />
 
                 {/* ── Auth Routes (Public Only) ── */}
