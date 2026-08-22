@@ -57,7 +57,29 @@
   --font-label: "DM Sans", sans-serif;
 }
 
-/* Custom Stitch Editorial Styles */
+/* ─── BASE STYLES ─── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f7f4ee;
+  color: #202525;
+  font-family: "DM Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+::selection {
+  background: #163a3d;
+  color: #f7f4ee;
+}
+
+/* ─── EDITORIAL UTILITIES ─── */
 @layer utilities {
   .scrim-bottom {
     background: linear-gradient(
@@ -112,18 +134,69 @@
   }
 }
 
-body {
-  background-color: #f7f4ee;
-  color: #202525;
-  font-family: "DM Sans", sans-serif;
-  -webkit-font-smoothing: antialiased;
+/* ─── MARQUEE ─── */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Playfair Display", Georgia, serif;
+/* ─── FLOATING ANIMATION ─── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float 7s ease-in-out 2s infinite;
+}
+
+/* ─── PULSE GLOW ─── */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(232, 137, 91, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(232, 137, 91, 0.4); }
+}
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* ─── GRADIENT TEXT ─── */
+.text-gradient {
+  background: linear-gradient(135deg, #163a3d 0%, #e8895b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── PARALLAX LAYER ─── */
+.parallax-layer {
+  will-change: transform;
+}
+
+/* ─── CARD 3D TILT ─── */
+.card-tilt {
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.card-tilt:hover {
+  box-shadow: 0 25px 60px rgba(22, 58, 61, 0.12), 0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* ─── NOISE / GRAIN TEXTURE ─── */
+.grain-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 1;
 }
