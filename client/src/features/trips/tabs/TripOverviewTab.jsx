@@ -12,6 +12,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import { getDestinationDetails } from "../../destinations/destinationData";
+
 export const TripOverviewTab = ({ trip }) => {
   const {
     name,
@@ -24,7 +26,8 @@ export const TripOverviewTab = ({ trip }) => {
     transportation,
   } = trip || {};
 
-  const destinationName = trip?.destination || (stops && stops[0]?.city) || name || "Destination";
+  const destinationName = trip?.destination || (stops && stops[0]?.city) || (name && !name.toLowerCase().includes("new trip") ? name : "Jaipur");
+  const destDetails = getDestinationDetails(destinationName);
 
   const calculateDays = () => {
     if (!startDate || !endDate) return "3 Days";
@@ -116,8 +119,8 @@ export const TripOverviewTab = ({ trip }) => {
 
           <div className="w-full md:w-56 h-36 rounded overflow-hidden shrink-0 shadow-sm bg-[#202525]">
             <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcahkpz5mpOYMwhwDZUc-EnvmmXYAIBqLSVrANrX2JFWwrDLFgERVUJF2ITaypkYu2inBd4HMzChumhm-VvamON_TXinZrJDM0avsuKoEaCaCwZx0B7Vt4krnF9gH9e1Rqa4Iy1X6sKLCbNu0CBlFx0I8BLagnGvGFMz3lnaV1V9yKKMb9ZXFEGpCDMFl8Sl7h1pipnCtmfs1dFQmUw-3bs4TLBp_i2XnUppxYfVripfsIiZHrdxw2Ww"
-              alt="City Palace courtyard archway"
+              src={destDetails.storyImage || destDetails.heroImage}
+              alt={`Scenery of ${destDetails.name}`}
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
             />
           </div>

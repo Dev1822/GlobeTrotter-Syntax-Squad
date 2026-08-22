@@ -21,6 +21,7 @@ import TripBudgetTab from "./tabs/TripBudgetTab";
 import TripPackingTab from "./tabs/TripPackingTab";
 import TripWeatherTab from "./tabs/TripWeatherTab";
 import TripNotesTab from "./tabs/TripNotesTab";
+import { getDestinationDetails } from "../destinations/destinationData";
 
 import {
   ArrowLeft,
@@ -142,10 +143,17 @@ export const TripDetailPage = () => {
   }
 
   const { name, startDate, endDate, status, budget, images = [] } = trip;
+  
+  const destinationCity = trip?.destination || (trip?.stops && trip?.stops[0]?.city) || (name && !name.toLowerCase().includes("new trip") ? name : "Jaipur");
+  const destDetails = getDestinationDetails(destinationCity);
+
   const coverImage =
     images && images.length > 0
       ? images[0]
-      : "https://lh3.googleusercontent.com/aida-public/AB6AXuAP7Eydm5klYyHztk8KE4KpZIyD83iGhMUvryuywAzGAGgOn2jZs7FQbQWQOMeKhHlwAYGAeSpvj-1Y5hO08P4zVVUvvz9LzlXTRS5mAFaDA6r9AtzD5ZPvz7VZQYOz31KH_L4ULdg08ExDnOTOpYzQUH9jOCNGkrTVjXE6cwibu4jNnQe5c6N3aH39Xj1H5iOFxaQLiRQStop3An0PGby3Rw5rjaiBFJgfc3oZriy_ucxO1VVg39hkDA";
+      : destDetails.heroImage;
+  
+  const displayLocation = `${destDetails.name}${destDetails.state ? `, ${destDetails.state}` : ''}`;
+  const displayTitle = (name && !name.toLowerCase().includes("new trip")) ? name : destDetails.name;
 
   const formatDate = (d) => {
     if (!d) return "";
@@ -196,7 +204,7 @@ export const TripDetailPage = () => {
               <div className="flex items-center space-x-2 mb-2">
                 <MapPin className="w-4 h-4 text-[#E8895B]" />
                 <span className="text-xs font-semibold uppercase tracking-widest text-[#E8895B]">
-                  {name}
+                  {displayLocation}
                 </span>
                 {trip.shareEnabled && (
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#CDEACE] text-[#2E4632] text-[10px] font-semibold uppercase">
@@ -207,7 +215,7 @@ export const TripDetailPage = () => {
               </div>
 
               <h1 className="font-serif text-3xl sm:text-6xl font-bold leading-tight drop-shadow-md">
-                Expedition to {name}
+                Expedition to {displayTitle}
               </h1>
 
               <div className="flex items-center space-x-2 text-xs sm:text-sm text-white/90">
