@@ -6,6 +6,10 @@ const Trip = sequelize.define('Trip', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  destination: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   startDate: {
     type: DataTypes.DATE,
     allowNull: false
@@ -29,4 +33,5 @@ const Trip = sequelize.define('Trip', {
     defaultValue: false
   }
 });
+
 module.exports = Trip;

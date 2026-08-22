@@ -14,9 +14,10 @@ export const TripWeatherTab = ({ trip }) => {
   const destinationName =
     trip?.destination ||
     (trip?.stops && trip?.stops[0]?.city) ||
-    (trip?.name && !trip.name.toLowerCase().includes("trip")
+    (trip?.name && !trip.name.toLowerCase().includes("new trip")
       ? trip.name
-      : "Jaipur");
+      : null) ||
+    "Udaipur";
 
   const fetchWeather = async () => {
     setLoading(true);

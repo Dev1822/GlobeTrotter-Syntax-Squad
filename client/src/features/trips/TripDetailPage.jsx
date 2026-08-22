@@ -143,7 +143,11 @@ export const TripDetailPage = () => {
 
   const { name, startDate, endDate, status, budget, images = [] } = trip;
   
-  const destinationCity = trip?.destination || (trip?.stops && trip?.stops[0]?.city) || (name && !name.toLowerCase().includes("new trip") ? name : "Jaipur");
+  const destinationCity =
+    trip?.destination ||
+    (trip?.stops && trip?.stops[0]?.city) ||
+    (name && !name.toLowerCase().includes("new trip") ? name : null) ||
+    "Udaipur";
   const destDetails = getDestinationDetails(destinationCity);
 
   const coverImage =

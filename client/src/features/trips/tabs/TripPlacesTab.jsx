@@ -35,7 +35,7 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
 
   const fetchPlaces = async (cats = [], price = "") => {
     const stop = stops.find(s => String(s.id || s._id) === String(selectedStopId)) || stops[0];
-    const cityName = stop?.city || trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : "Jaipur");
+    const cityName = stop?.city || trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : null) || "Udaipur";
 
     setLoading(true);
     setError(null);
@@ -65,7 +65,7 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
 
       // Auto-create stop if trip has no stops yet
       if (!targetStopId || currentStops.length === 0) {
-        const cityName = trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : "Jaipur");
+        const cityName = trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : null) || "Udaipur";
         const tripId = trip.id || trip._id;
         const newStopRes = await tripsApi.addStop(tripId, { city: cityName });
         const newStop = newStopRes.data;
@@ -129,7 +129,7 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
               onChange={e => setSelectedStopId(e.target.value)}
               className="bg-[#F6F3F2] border border-[#CBD5D6] rounded px-3 py-1 font-serif text-xl"
             >
-              {stops.length === 0 && <option value="">{trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : "Jaipur")}</option>}
+              {stops.length === 0 && <option value="">{trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : null) || "Udaipur"}</option>}
               {stops.map(s => <option key={s.id || s._id} value={String(s.id || s._id)}>{s.city}</option>)}
             </select>
           </div>

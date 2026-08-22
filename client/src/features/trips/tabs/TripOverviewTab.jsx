@@ -26,7 +26,11 @@ export const TripOverviewTab = ({ trip }) => {
     transportation,
   } = trip || {};
 
-  const destinationName = trip?.destination || (stops && stops[0]?.city) || (name && !name.toLowerCase().includes("new trip") ? name : "Jaipur");
+  const destinationName =
+    trip?.destination ||
+    (stops && stops[0]?.city) ||
+    (name && !name.toLowerCase().includes("new trip") ? name : null) ||
+    "Udaipur";
   const destDetails = getDestinationDetails(destinationName);
 
   const calculateDays = () => {

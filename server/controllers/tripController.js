@@ -13,7 +13,18 @@ exports.getTrips = async (req, res) => {
       ],
       order: [['createdAt', 'DESC']]
     });
-    res.json(trips);
+    
+    const formattedTrips = trips.map(trip => {
+      const plain = trip.get({ plain: true });
+      if (!plain.destination) {
+        plain.destination = (plain.name && !plain.name.toLowerCase().includes("new trip"))
+          ? plain.name
+          : (plain.stops && plain.stops[0]?.city) || "Udaipur";
+      }
+      return plain;
+    });
+
+    res.json(formattedTrips);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -37,7 +48,15 @@ exports.getTrip = async (req, res) => {
       ]
     });
     if (!trip) return res.status(404).json({ msg: "Trip not found" });
-    res.json(trip);
+
+    const plain = trip.get({ plain: true });
+    if (!plain.destination) {
+      plain.destination = (plain.name && !plain.name.toLowerCase().includes("new trip"))
+        ? plain.name
+        : (plain.stops && plain.stops[0]?.city) || "Udaipur";
+    }
+
+    res.json(plain);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -47,10 +66,12 @@ exports.getTrip = async (req, res) => {
 exports.createTrip = async (req, res) => {
   try {
     const { name, destination, startDate, endDate, description, budget, status, stops } = req.body;
-    const tripName = name || destination || "New Trip";
+    const dest = destination?.trim() || name?.trim() || "Destination";
+    const tripName = name?.trim() || dest;
     const trip = await Trip.create({
       userId: req.user.id,
       name: tripName,
+      destination: dest,
       startDate,
       endDate,
       description,
@@ -74,7 +95,10 @@ exports.createTrip = async (req, res) => {
       include: [{ model: TripStop, as: 'stops' }]
     });
 
-    res.json(createdTrip);
+    const plain = createdTrip.get({ plain: true });
+    plain.destination = plain.destination || dest;
+
+    res.json(plain);
   } catch (err) {
     console.error("createTrip error:", err.message);
     res.status(500).send("Server error");
