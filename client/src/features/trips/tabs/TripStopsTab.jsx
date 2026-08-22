@@ -139,7 +139,72 @@ export const TripStopsTab = ({ trip, onTripUpdated }) => {
       {isAddOpen && (
         <Modal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} title="Add City Stop">
           <form onSubmit={handleAddStop} className="space-y-4">
-            <FormField label="City Name" value={city} onChange={e => setCity(e.target.value)} required />
+            <div className="space-y-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#899596]">
+                City Name *
+              </label>
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                required
+                className="w-full bg-[#FFFFFF] border border-[#CBD5D6] rounded px-3 py-2.5 text-sm font-medium text-[#202525] focus:outline-none focus:border-[#163A3D]"
+              >
+                <option value="">-- Select a Real City --</option>
+                <optgroup label="India (North)">
+                  <option value="Jaipur">Jaipur, Rajasthan</option>
+                  <option value="Udaipur">Udaipur, Rajasthan</option>
+                  <option value="Varanasi">Varanasi, Uttar Pradesh</option>
+                  <option value="Agra">Agra, Uttar Pradesh</option>
+                  <option value="Manali">Manali, Himachal Pradesh</option>
+                  <option value="Shimla">Shimla, Himachal Pradesh</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Amritsar">Amritsar, Punjab</option>
+                  <option value="Rishikesh">Rishikesh, Uttarakhand</option>
+                  <option value="Leh-Ladakh">Leh-Ladakh, Ladakh</option>
+                </optgroup>
+                <optgroup label="India (South, West & East)">
+                  <option value="Goa">Goa</option>
+                  <option value="Kerala">Kerala</option>
+                  <option value="Mumbai">Mumbai, Maharashtra</option>
+                  <option value="Bengaluru">Bengaluru, Karnataka</option>
+                  <option value="Chennai">Chennai, Tamil Nadu</option>
+                  <option value="Kolkata">Kolkata, West Bengal</option>
+                  <option value="Hyderabad">Hyderabad, Telangana</option>
+                  <option value="Darjeeling">Darjeeling, West Bengal</option>
+                  <option value="Mysore">Mysore, Karnataka</option>
+                  <option value="Gandhinagar">Gandhinagar, Gujarat</option>
+                  <option value="Ahmedabad">Ahmedabad, Gujarat</option>
+                </optgroup>
+                <optgroup label="Europe">
+                  <option value="Paris">Paris, France</option>
+                  <option value="Rome">Rome, Italy</option>
+                  <option value="London">London, United Kingdom</option>
+                  <option value="Barcelona">Barcelona, Spain</option>
+                  <option value="Amsterdam">Amsterdam, Netherlands</option>
+                  <option value="Venice">Venice, Italy</option>
+                  <option value="Vienna">Vienna, Austria</option>
+                  <option value="Prague">Prague, Czech Republic</option>
+                  <option value="Zurich">Zurich, Switzerland</option>
+                </optgroup>
+                <optgroup label="Asia & Middle East">
+                  <option value="Tokyo">Tokyo, Japan</option>
+                  <option value="Kyoto">Kyoto, Japan</option>
+                  <option value="Bangkok">Bangkok, Thailand</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Dubai">Dubai, UAE</option>
+                  <option value="Bali">Bali, Indonesia</option>
+                  <option value="Istanbul">Istanbul, Turkey</option>
+                  <option value="Seoul">Seoul, South Korea</option>
+                </optgroup>
+                <optgroup label="Americas & Oceania">
+                  <option value="New York">New York, USA</option>
+                  <option value="Los Angeles">Los Angeles, USA</option>
+                  <option value="San Francisco">San Francisco, USA</option>
+                  <option value="Toronto">Toronto, Canada</option>
+                  <option value="Sydney">Sydney, Australia</option>
+                </optgroup>
+              </select>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <FormField label="Start Date" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
               <FormField label="End Date" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
