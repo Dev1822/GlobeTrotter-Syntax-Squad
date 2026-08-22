@@ -90,13 +90,7 @@ router.get("/:id", async (req, res) => {
     
     if (!data) {
       data = await Destination.findOne({
-        where: { slug: idOrSlug } 
-      });
-    }
-
-    if (!data) {
-      data = await Destination.findOne({
-        where: { name: idOrSlug } 
+        where: { name: idOrSlug } // Sequelize case-insensitive matches depend on collation, usually true for MySQL
       });
     }
 

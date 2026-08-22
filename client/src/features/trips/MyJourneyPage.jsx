@@ -1,9 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { tripsApi } from "../../services/api/tripsApi";
 import CreateTripModal from "./CreateTripModal";
 import LoadingState from "../../components/LoadingState";
-import { ArrowRight, Plus, MapPin, Calendar } from "lucide-react";
+import { ArrowRight, Plus, MapPin, Calendar, Compass } from "lucide-react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+
+/* ─── SCROLL REVEAL WRAPPER ─── */
+const ScrollReveal = ({ children, className = "", delay = 0, direction = "up" }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const directions = {
+    up: { y: 40, x: 0 },
+    down: { y: -40, x: 0 },
+    left: { y: 0, x: 40 },
+    right: { y: 0, x: -40 },
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, ...directions[direction] }}
+      animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
+      transition={{ duration: 0.7, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 export const MyJourneyPage = () => {
   const [trips, setTrips] = useState([]);
@@ -87,34 +112,50 @@ export const MyJourneyPage = () => {
   ];
 
   return (
-    <div className="bg-[#F7F4EE] text-[#202525] min-h-screen pt-32 pb-32">
+    <div className="bg-[#F7F4EE] text-[#202525] min-h-screen pt-32 pb-32 overflow-x-hidden relative">
+      
+      {/* Decorative grain overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-50 grain-overlay z-0 mix-blend-overlay" />
+
       {/* ── 1. HEADER SECTION ── */}
-      <header className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-14">
+      <header className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-14 relative z-10">
         <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-[#CBD5D6]/30 pb-8">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#163A3D] block mb-2">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#E8895B] block mb-2 flex items-center gap-2">
+              <Compass className="w-4 h-4" />
               PERSONAL EXPEDITIONS
             </span>
-            <h1 className="font-serif text-4xl sm:text-6xl font-bold text-[#163A3D]">
+            <h1 className="font-serif text-5xl sm:text-7xl font-bold text-[#163A3D] tracking-tight">
               My Journey
             </h1>
-            <p className="text-sm sm:text-base text-[#54433A] mt-2">
-              Your trips, your places, your stories.
+            <p className="text-sm sm:text-lg text-[#54433A] mt-2 max-w-xl">
+              Your stories, your places, curated with elegance.
             </p>
-          </div>
+          </motion.div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             type="button"
             onClick={() => setIsCreateModalOpen(true)}
-            className="self-start md:self-auto bg-[#202525] text-white text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded hover:bg-[#163A3D] transition-colors duration-300 shadow-sm inline-flex items-center gap-2 cursor-pointer"
+            className="self-start md:self-auto bg-[#163A3D] text-white text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded hover:bg-[#204F53] transition-colors duration-300 shadow-xl inline-flex items-center gap-2 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Plan a New Trip</span>
-          </button>
+          </motion.button>
         </div>
 
         {/* Filters */}
-        <div className="flex gap-8 mt-8 overflow-x-auto pb-3 hide-scrollbar border-b border-[#CBD5D6]/20">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex gap-8 mt-8 overflow-x-auto pb-3 hide-scrollbar border-b border-[#CBD5D6]/20 relative"
+        >
           {[
             { id: "all", label: "All" },
             { id: "planned", label: "Upcoming" },
@@ -125,157 +166,214 @@ export const MyJourneyPage = () => {
               key={tab.id}
               type="button"
               onClick={() => setFilterStatus(tab.id)}
-              className={`text-xs font-semibold uppercase tracking-widest pb-3 -mb-[14px] transition-colors cursor-pointer ${
+              className={`text-xs font-semibold uppercase tracking-widest pb-3 -mb-[14px] transition-colors cursor-pointer relative ${
                 filterStatus === tab.id
-                  ? "text-[#163A3D] border-b-2 border-[#163A3D]"
+                  ? "text-[#163A3D]"
                   : "text-[#54433A] hover:text-[#163A3D]"
               }`}
             >
               {tab.label}
+              {filterStatus === tab.id && (
+                <motion.div
+                  layoutId="activeFilter"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#163A3D]"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
             </button>
           ))}
-        </div>
+        </motion.div>
       </header>
 
       {/* ── 2. FEATURED UPCOMING TRIP ── */}
+      <div className="relative z-10">
       {loading ? (
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 mb-24">
           <LoadingState message="Unpacking your journey archives..." />
         </div>
       ) : upcomingTrip ? (
-        <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-24">
-          <div
-            onClick={() => navigate(`/trips/${upcomingTrip._id}`)}
-            className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded overflow-hidden group cursor-pointer shadow-sm bg-[#202525]"
-          >
-            <img
-              alt={upcomingTrip.destination}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              src={
-                upcomingTrip.destinationImageUrl ||
-                "https://lh3.googleusercontent.com/aida-public/AB6AXuCPK7Kb014ApSbqJiWUFvuGCH4yM7yCOpPNisGK8_FTjqE1hssMdn34_nB412kz_X3WHnEFvMbz5T6r2SOz_lfv5m7YrXvf5Xgmrqm9f1zNPTvgPj2J6JpEbC5kx0payiVFuEXDlXDb1uH_zlzQHOciJF4rSHIWK0Lbh6-rMGSleYJr9sIXrFl3fNlVaS_qTQI8Ft0FEZkApiwAhVemWiN6K0vp9y38nnXRfjU_t0Z0LRVhtrdmtXK3dA"
-              }
-            />
-            <div className="absolute inset-0 scrim-bottom" />
-            <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 flex flex-col md:flex-row md:justify-between md:items-end gap-6 text-white">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded text-[11px] font-semibold uppercase tracking-widest text-white border border-white/30">
+        <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-32">
+          <ScrollReveal delay={0.1}>
+            <div
+              onClick={() => navigate(`/trips/${upcomingTrip._id}`)}
+              className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded overflow-hidden group cursor-pointer shadow-2xl bg-[#202525] card-tilt"
+            >
+              <motion.img
+                alt={upcomingTrip.destination}
+                className="absolute inset-0 w-full h-full object-cover"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                src={
+                  upcomingTrip.destinationImageUrl ||
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCPK7Kb014ApSbqJiWUFvuGCH4yM7yCOpPNisGK8_FTjqE1hssMdn34_nB412kz_X3WHnEFvMbz5T6r2SOz_lfv5m7YrXvf5Xgmrqm9f1zNPTvgPj2J6JpEbC5kx0payiVFuEXDlXDb1uH_zlzQHOciJF4rSHIWK0Lbh6-rMGSleYJr9sIXrFl3fNlVaS_qTQI8Ft0FEZkApiwAhVemWiN6K0vp9y38nnXRfjU_t0Z0LRVhtrdmtXK3dA"
+                }
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+              
+              <div className="absolute top-6 left-6 flex gap-3 z-10">
+                 <motion.span 
+                   initial={{ opacity: 0, y: -10 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   transition={{ delay: 0.5 }}
+                   className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md rounded text-[10px] font-semibold uppercase tracking-widest text-white border border-white/30 shadow-lg"
+                 >
                     {upcomingTrip.status || "Upcoming"}
-                  </span>
-                  <span className="text-xs font-semibold uppercase tracking-widest opacity-80">
-                    {upcomingTrip.startDate
-                      ? `${new Date(upcomingTrip.startDate).toLocaleDateString("en-IN", { month: "short", day: "numeric" })} — ${new Date(upcomingTrip.endDate).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}`
-                      : "Dates not set"}
-                  </span>
-                </div>
-                <h2 className="font-serif text-3xl sm:text-5xl font-bold leading-tight">
-                  {upcomingTrip.destination}
-                </h2>
-                <p className="text-sm sm:text-base opacity-90 mt-1">India</p>
+                 </motion.span>
               </div>
-              <button
-                type="button"
-                className="text-xs font-semibold uppercase tracking-widest flex items-center gap-2 hover:opacity-80 transition-all duration-300 group-hover:translate-x-1"
-              >
-                <span>View Trip</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+
+              <div className="absolute bottom-0 left-0 w-full p-8 md:p-14 flex flex-col md:flex-row md:justify-between md:items-end gap-6 text-white z-10">
+                <div className="overflow-hidden">
+                  <motion.div
+                    initial={{ y: 50, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                  >
+                    <div className="flex items-center gap-2 mb-3 opacity-90 text-xs font-semibold uppercase tracking-widest">
+                      <Calendar className="w-4 h-4 text-[#E8895B]" />
+                      {upcomingTrip.startDate
+                        ? `${new Date(upcomingTrip.startDate).toLocaleDateString("en-IN", { month: "short", day: "numeric" })} — ${new Date(upcomingTrip.endDate).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}`
+                        : "Dates not set"}
+                    </div>
+                    <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-lg">
+                      {upcomingTrip.destination}
+                    </h2>
+                    <p className="text-sm sm:text-lg opacity-80 mt-2 font-light flex items-center gap-2">
+                       <MapPin className="w-4 h-4"/> India
+                    </p>
+                  </motion.div>
+                </div>
+                
+                <motion.div
+                   whileHover={{ x: 10 }}
+                   className="w-14 h-14 rounded-full bg-[#E8895B] flex items-center justify-center text-white cursor-pointer shadow-[0_0_20px_rgba(232,137,91,0.4)] transition-shadow hover:shadow-[0_0_30px_rgba(232,137,91,0.6)]"
+                >
+                  <ArrowRight className="w-6 h-6" />
+                </motion.div>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </section>
       ) : (
-        <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-24 text-center py-16 bg-white/50 border border-[#CBD5D6]/30 rounded">
-          <h3 className="font-serif text-2xl font-bold text-[#202525] mb-2">
-            No Journeys Planned Yet
-          </h3>
-          <p className="text-sm text-[#54433A] mb-6">
-            Embark on your next expedition across India by defining your
-            destination, dates, and budget.
-          </p>
-          <button
-            type="button"
-            onClick={() => setIsCreateModalOpen(true)}
-            className="bg-[#163A3D] text-white px-8 py-3.5 rounded text-xs font-semibold uppercase tracking-widest hover:bg-[#204F53] transition-colors inline-flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Chart Your First Journey</span>
-          </button>
+        <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-32">
+          <ScrollReveal>
+            <div className="text-center py-24 bg-white/40 backdrop-blur-sm border border-[#CBD5D6]/30 rounded-xl shadow-sm relative overflow-hidden">
+              <div className="absolute inset-0 stripe-pattern opacity-5" />
+              <h3 className="font-serif text-3xl sm:text-4xl font-bold text-[#163A3D] mb-4 relative z-10">
+                The Canvas is Empty
+              </h3>
+              <p className="text-sm sm:text-base text-[#54433A] mb-8 max-w-md mx-auto relative z-10">
+                Embark on your next expedition across India. Every great story begins with a single step.
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="button"
+                onClick={() => setIsCreateModalOpen(true)}
+                className="bg-[#163A3D] text-white px-8 py-4 rounded text-xs font-semibold uppercase tracking-widest hover:bg-[#204F53] transition-colors inline-flex items-center gap-2 shadow-lg relative z-10"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Chart Your First Journey</span>
+              </motion.button>
+            </div>
+          </ScrollReveal>
         </section>
       )}
+      </div>
 
       {/* ── 3. PAST JOURNEYS ASYMMETRICAL GRID ── */}
-      <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto">
-        <h3 className="font-serif text-3xl sm:text-4xl font-bold text-[#163A3D] mb-12 border-b border-[#CBD5D6]/30 pb-4">
-          Past Journeys
-        </h3>
+      <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto relative z-10">
+        <ScrollReveal>
+          <div className="flex items-center justify-between mb-12 border-b border-[#CBD5D6]/30 pb-4">
+            <h3 className="font-serif text-3xl sm:text-5xl font-bold text-[#163A3D]">
+              Chronicles
+            </h3>
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#899596]">
+              Past Expeditions
+            </span>
+          </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
           {pastTrips.length > 0
             ? pastTrips.map((trip, idx) => {
                 const isLarge = idx % 3 === 0;
                 const span = isLarge
-                  ? "md:col-span-7 aspect-square"
-                  : "md:col-span-5 aspect-[4/3]";
+                  ? "md:col-span-7 aspect-square md:aspect-[4/3]"
+                  : "md:col-span-5 aspect-[4/3] md:aspect-[3/4] mt-0 md:mt-16";
                 return (
-                  <div
-                    key={trip._id}
-                    onClick={() => navigate(`/trips/${trip._id}`)}
-                    className={`${span} relative rounded overflow-hidden group cursor-pointer bg-[#202525] shadow-sm`}
-                  >
-                    <img
-                      alt={trip.destination}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      src={
-                        trip.destinationImageUrl ||
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuCop9_SUGmoIs8xdYJa5NPHUgJmnmEwh8ERGIz_QNasOM6UHaTVahV3K1wOz6L2u3SROQd2UPS_fZc2TPnz--AyMWSxPG3woCr7fU38exkAkmaezXjYNk2YBb0bxobTclTFcMeHWXppUx_SQlXzc2IEessiDKzephcx0bQRv1USw3ih39tNNKcSoCLdcqwM7m2tea60cEEaxzQhlWEjJQbkRuWRMlgXFeapJ_dr19cRKIzOMkYHwZ_XHQ"
-                      }
-                    />
-                    <div className="absolute inset-0 scrim-bottom opacity-80" />
-                    <div className="absolute bottom-0 left-0 w-full p-8 text-white">
-                      <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-2">
-                        {trip.status || "Completed"}
-                      </p>
-                      <h4 className="font-serif text-3xl font-bold">
-                        {trip.destination}
-                      </h4>
+                  <ScrollReveal key={trip._id} delay={(idx % 3) * 0.15} className={span}>
+                    <div
+                      onClick={() => navigate(`/trips/${trip._id}`)}
+                      className={`relative w-full h-full rounded overflow-hidden group cursor-pointer bg-[#202525] shadow-lg hover-lift`}
+                    >
+                      <motion.img
+                        alt={trip.destination}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        whileHover={{ scale: 1.08 }}
+                        transition={{ duration: 1.2, ease: "easeOut" }}
+                        src={
+                          trip.destinationImageUrl ||
+                          "https://lh3.googleusercontent.com/aida-public/AB6AXuCop9_SUGmoIs8xdYJa5NPHUgJmnmEwh8ERGIz_QNasOM6UHaTVahV3K1wOz6L2u3SROQd2UPS_fZc2TPnz--AyMWSxPG3woCr7fU38exkAkmaezXjYNk2YBb0bxobTclTFcMeHWXppUx_SQlXzc2IEessiDKzephcx0bQRv1USw3ih39tNNKcSoCLdcqwM7m2tea60cEEaxzQhlWEjJQbkRuWRMlgXFeapJ_dr19cRKIzOMkYHwZ_XHQ"
+                        }
+                      />
+                      <div className="absolute inset-0 scrim-bottom opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
+                      <div className="absolute bottom-0 left-0 w-full p-8 text-white z-10">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80 mb-2 text-[#E8895B]">
+                          {trip.status || "Completed"}
+                        </p>
+                        <h4 className="font-serif text-3xl sm:text-4xl font-bold translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                          {trip.destination}
+                        </h4>
+                      </div>
                     </div>
-                  </div>
+                  </ScrollReveal>
                 );
               })
-            : defaultPastJourneys.map((item) => (
-                <div
-                  key={item._id}
-                  onClick={() => setIsCreateModalOpen(true)}
-                  className={`${item.spanClass} relative rounded overflow-hidden group cursor-pointer bg-[#202525] shadow-sm`}
-                >
-                  <img
-                    alt={item.destination}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    src={item.imageUrl}
-                  />
-                  <div className="absolute inset-0 scrim-bottom opacity-80" />
-                  <div className="absolute bottom-0 left-0 w-full p-8 text-white">
-                    <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-2">
-                      {item.dateLabel}
-                    </p>
-                    <h4 className="font-serif text-3xl font-bold">
-                      {item.destination}
-                    </h4>
+            : defaultPastJourneys.map((item, idx) => (
+                <ScrollReveal key={item._id} delay={(idx % 3) * 0.1} className={`${item.spanClass}`}>
+                  <div
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className={`relative w-full h-full rounded overflow-hidden group cursor-pointer bg-[#202525] shadow-lg hover-lift`}
+                  >
+                    <motion.img
+                      alt={item.destination}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      whileHover={{ scale: 1.08 }}
+                      transition={{ duration: 1.2, ease: "easeOut" }}
+                      src={item.imageUrl}
+                    />
+                    <div className="absolute inset-0 scrim-bottom opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="absolute bottom-0 left-0 w-full p-8 text-white z-10 overflow-hidden">
+                      <motion.p 
+                        className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80 mb-2 text-[#E8895B]"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        {item.dateLabel}
+                      </motion.p>
+                      <motion.h4 
+                        className="font-serif text-3xl sm:text-5xl font-bold translate-y-4 group-hover:translate-y-0 transition-transform duration-500"
+                      >
+                        {item.destination}
+                      </motion.h4>
+                    </div>
                   </div>
-                </div>
+                </ScrollReveal>
               ))}
         </div>
       </section>
 
       {/* Create Journey Modal */}
-      {isCreateModalOpen && (
-        <CreateTripModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-          onTripCreated={handleTripCreated}
-        />
-      )}
+      <AnimatePresence>
+        {isCreateModalOpen && (
+          <CreateTripModal
+            isOpen={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+            onTripCreated={handleTripCreated}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

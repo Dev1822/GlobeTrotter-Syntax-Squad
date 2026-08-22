@@ -72,9 +72,9 @@ export const ExplorePage = () => {
     { id: "popular", label: "Popular" },
     { id: "North India", label: "North India" },
     { id: "South India", label: "South India" },
-    { id: "Europe", label: "Europe" },
-    { id: "Asia", label: "Asia" },
-    { id: "Americas", label: "Americas" },
+    { id: "West India", label: "West India" },
+    { id: "East India", label: "East India" },
+    { id: "Central India", label: "Central India" },
   ];
 
   // Keep local search input synchronized if URL param changes
