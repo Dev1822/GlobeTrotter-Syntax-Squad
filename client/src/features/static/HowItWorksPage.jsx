@@ -49,8 +49,8 @@ export const HowItWorksPage = () => {
         <motion.div className="absolute inset-0 z-0" style={{ y: heroY, scale: heroScale }}>
           <img
             className="w-full h-full object-cover object-center"
-            alt="Historic Indian stepwell and palace complex at dawn"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6haOTtvEnK6d6CjwUuZaD8EmAq5t-5f4JYc86ae_ghR3w3BQK8u_Cw1XoD6Y1jIa_eN4bCUGOqU-QETzD5bZQz2H6FnNiHfRkAvqifXjxCY6djxVmHoGvKEJFAhEB6t2gq-pRNpbxL_OA4EK-CX20_rYVZi0i9RDDNHIZqukwQpNC3YJVCzy9_mBXWxFpLQzOQ3N2cg1UroDdY1owDZjEeR8bgnLM6SkbNw0PizHzspgyztXkFtgmzw"
+            alt="Breathtaking mountain landscape with serene lake"
+            src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=2000&q=90"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0F1C1E]/95 via-[#0F1C1E]/40 to-transparent z-[1]" />
         </motion.div>
