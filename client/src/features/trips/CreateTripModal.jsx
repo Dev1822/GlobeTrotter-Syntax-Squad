@@ -106,7 +106,8 @@ export const CreateTripModal = ({
       if (onTripCreated) {
         onTripCreated(res.data);
       } else {
-        navigate(`/trips/${res.data._id}`);
+        const newId = res.data?.id || res.data?._id;
+        navigate(`/trips/${newId}`);
       }
     } catch (err) {
       setError(

@@ -195,7 +195,7 @@ export const MyJourneyPage = () => {
         <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-32">
           <ScrollReveal delay={0.1}>
             <div
-              onClick={() => navigate(`/trips/${upcomingTrip._id}`)}
+              onClick={() => navigate(`/trips/${upcomingTrip.id || upcomingTrip._id}`)}
               className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded overflow-hidden group cursor-pointer shadow-2xl bg-[#202525] card-tilt"
             >
               <motion.img
@@ -301,9 +301,9 @@ export const MyJourneyPage = () => {
                   ? "md:col-span-7 aspect-square md:aspect-[4/3]"
                   : "md:col-span-5 aspect-[4/3] md:aspect-[3/4] mt-0 md:mt-16";
                 return (
-                  <ScrollReveal key={trip._id} delay={(idx % 3) * 0.15} className={span}>
+                  <ScrollReveal key={trip.id || trip._id} delay={(idx % 3) * 0.15} className={span}>
                     <div
-                      onClick={() => navigate(`/trips/${trip._id}`)}
+                      onClick={() => navigate(`/trips/${trip.id || trip._id}`)}
                       className={`relative w-full h-full rounded overflow-hidden group cursor-pointer bg-[#202525] shadow-lg hover-lift`}
                     >
                       <motion.img

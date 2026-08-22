@@ -23,9 +23,33 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response Interceptor: Global 401 handling
+function normalizeIds(obj) {
+  if (!obj || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) {
+    obj.forEach(normalizeIds);
+  } else {
+    if (obj.id !== undefined && obj._id === undefined) {
+      obj._id = obj.id;
+    } else if (obj._id !== undefined && obj.id === undefined) {
+      obj.id = obj._id;
+    }
+    Object.keys(obj).forEach((key) => {
+      if (obj[key] && typeof obj[key] === "object") {
+        normalizeIds(obj[key]);
+      }
+    });
+  }
+  return obj;
+}
+
+// Response Interceptor: Global 401 handling & ID normalization
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response?.data) {
+      normalizeIds(response.data);
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       // Clear token on authentication expiry

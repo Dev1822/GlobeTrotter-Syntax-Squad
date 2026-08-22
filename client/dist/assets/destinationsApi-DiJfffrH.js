@@ -1,1 +1,0 @@
-import{t as e}from"./client-COeXhJcb.js";var t={getAll:(t={})=>e.get(`/destinations`,{params:t}),search:t=>e.get(`/destinations/search`,{params:{q:t}}),getById:t=>e.get(`/destinations/${t}`)};export{t};

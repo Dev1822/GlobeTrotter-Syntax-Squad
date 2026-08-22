@@ -289,7 +289,8 @@ export const DestinationDetailPage = () => {
           initialDestination={name}
           onTripCreated={(newTrip) => {
             setIsPlanModalOpen(false);
-            navigate(`/trips/${newTrip._id}`);
+            const newId = newTrip?.id || newTrip?._id;
+            navigate(`/trips/${newId}`);
           }}
         />
       )}
