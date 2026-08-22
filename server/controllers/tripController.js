@@ -46,13 +46,16 @@ exports.getTrip = async (req, res) => {
 
 exports.createTrip = async (req, res) => {
   try {
-    const { name, startDate, endDate, description, stops } = req.body;
+    const { name, destination, startDate, endDate, description, budget, status, stops } = req.body;
+    const tripName = name || destination || "New Trip";
     const trip = await Trip.create({
       userId: req.user.id,
-      name: name || "New Trip",
+      name: tripName,
       startDate,
       endDate,
-      description
+      description,
+      budget: budget !== undefined && budget !== null ? Number(budget) : 0,
+      status: status || "planned"
     });
 
     if (stops && stops.length > 0) {
@@ -73,7 +76,7 @@ exports.createTrip = async (req, res) => {
 
     res.json(createdTrip);
   } catch (err) {
-    console.error(err.message);
+    console.error("createTrip error:", err.message);
     res.status(500).send("Server error");
   }
 };

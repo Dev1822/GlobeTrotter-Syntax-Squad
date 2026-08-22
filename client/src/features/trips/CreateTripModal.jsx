@@ -78,12 +78,13 @@ export const CreateTripModal = ({
     setLoading(true);
 
     const payload = {
+      name: formData.destination.trim(),
       destination: formData.destination.trim(),
       startDate: formData.startDate,
       endDate: formData.endDate,
       description: formData.description.trim(),
       budget: formData.budget ? Number(formData.budget) : 0,
-      status: formData.status,
+      status: formData.status || "planned",
     };
 
     if (formData.accommodationName) {

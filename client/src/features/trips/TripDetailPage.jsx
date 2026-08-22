@@ -276,7 +276,9 @@ export const TripDetailPage = () => {
           <TripItineraryTab trip={trip} onTripUpdated={setTrip} />
         )}
         {activeTab === "places" && <TripPlacesTab trip={trip} />}
-        {activeTab === "budget" && <TripBudgetTab trip={trip} />}
+        {activeTab === "budget" && (
+          <TripBudgetTab trip={trip} onTripUpdated={setTrip} />
+        )}
         {activeTab === "weather" && <TripWeatherTab trip={trip} />}
         {activeTab === "notes" && (
           <TripNotesTab trip={trip} onTripUpdated={setTrip} />
