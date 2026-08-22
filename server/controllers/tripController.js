@@ -113,18 +113,21 @@ exports.addStop = async (req, res) => {
     const maxOrder = await TripStop.max('orderIndex', { where: { tripId: trip.id } });
     const orderIndex = maxOrder !== null ? maxOrder + 1 : 0;
 
+    const stopStartDate = (req.body.startDate && req.body.startDate.trim() !== "") ? req.body.startDate : trip.startDate;
+    const stopEndDate = (req.body.endDate && req.body.endDate.trim() !== "") ? req.body.endDate : trip.endDate;
+
     const stop = await TripStop.create({
       tripId: trip.id,
       city: req.body.city,
-      startDate: req.body.startDate || trip.startDate,
-      endDate: req.body.endDate || trip.endDate,
+      startDate: stopStartDate,
+      endDate: stopEndDate,
       orderIndex
     });
 
     res.json(stop);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    console.error("addStop error:", err);
+    res.status(500).json({ msg: err.message || "Failed to add stop" });
   }
 };
 
