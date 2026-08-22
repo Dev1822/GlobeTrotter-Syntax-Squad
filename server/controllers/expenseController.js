@@ -56,19 +56,10 @@ exports.createExpense = async (req, res) => {
     if (!tripExists) {
       return res.status(404).json({ msg: "Trip not found or unauthorized" });
     }
-    const expenseDate = new Date(date || Date.now());
-
+    const expenseDate = date ? new Date(date) : new Date();
     if (isNaN(expenseDate.getTime())) {
       return res.status(400).json({
         msg: "Invalid expense date.",
-      });
-    }
-    if (
-      (tripExists.startDate && expenseDate < new Date(tripExists.startDate)) ||
-      (tripExists.endDate && expenseDate > new Date(tripExists.endDate))
-    ) {
-      return res.status(400).json({
-        msg: `Expense date must be between travel dates.`,
       });
     }
     
@@ -186,19 +177,11 @@ exports.updateExpense = async (req, res) => {
     if (description) expenseFields.description = description;
     if (date) {
       const expenseDate = new Date(date);
-
       if (isNaN(expenseDate.getTime())) {
         return res.status(400).json({
           msg: "Invalid expense date.",
         });
       }
-
-      if (expenseDate < trip.startDate || expenseDate > trip.endDate) {
-        return res.status(400).json({
-          msg: `Expense date must be between ${new Date(trip.startDate).toDateString()} and ${new Date(trip.endDate).toDateString()}.`,
-        });
-      }
-
       expenseFields.date = expenseDate;
     }
 

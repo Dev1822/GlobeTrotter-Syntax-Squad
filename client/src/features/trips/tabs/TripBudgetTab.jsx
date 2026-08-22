@@ -375,13 +375,10 @@ export const TripBudgetTab = ({ trip }) => {
                 label="Date of Expense"
                 name="date"
                 type="date"
-                min={trip.startDate ? trip.startDate.split("T")[0] : undefined}
-                max={trip.endDate ? trip.endDate.split("T")[0] : undefined}
                 value={formData.date}
                 onChange={(e) =>
                   setFormData({ ...formData, date: e.target.value })
                 }
-                helperText="Must be between trip departure and return dates"
                 required
               />
             </div>
