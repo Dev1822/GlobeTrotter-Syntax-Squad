@@ -22,7 +22,9 @@ export const TripOverviewTab = ({ trip }) => {
     activities = [],
     accommodation,
     transportation,
-  } = trip;
+  } = trip || {};
+
+  const destinationName = trip?.destination || (stops && stops[0]?.city) || name || "Destination";
 
   const calculateDays = () => {
     if (!startDate || !endDate) return "3 Days";
@@ -104,11 +106,11 @@ export const TripOverviewTab = ({ trip }) => {
                 : "Upcoming Milestone"}
             </p>
             <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#202525]">
-              {nextActivity?.name || `Explore ${destination} City Center`}
+              {nextActivity?.name || `Explore ${destinationName} City Center`}
             </h3>
             <p className="text-xs sm:text-sm text-[#54433A] max-w-xl leading-relaxed">
               {nextActivity?.notes ||
-                `Begin your expedition in ${destination}. Stroll through historic courtyards, local markets, and scenic lakeside promenades.`}
+                `Begin your expedition in ${destinationName}. Stroll through historic courtyards, local markets, and scenic lakeside promenades.`}
             </p>
           </div>
 

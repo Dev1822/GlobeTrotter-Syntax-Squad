@@ -11,13 +11,15 @@ export const TripWeatherTab = ({ trip }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const destinationName = trip?.destination || (trip?.stops && trip?.stops[0]?.city) || trip?.name || "Jaipur";
+
   const fetchWeather = async () => {
     setLoading(true);
     setError(null);
     try {
       const [curRes, foreRes] = await Promise.all([
-        weatherApi.getCurrent(trip.destination),
-        weatherApi.getForecast(trip.destination),
+        weatherApi.getCurrent(destinationName),
+        weatherApi.getForecast(destinationName),
       ]);
       setCurrent(curRes.data);
       setForecast(foreRes.data?.forecast || []);
@@ -26,7 +28,7 @@ export const TripWeatherTab = ({ trip }) => {
       setError(
         getErrorMessage(
           err,
-          `Could not fetch live weather forecast for ${trip.destination}. Verify WEATHER_API_KEY in backend.`,
+          `Could not fetch live weather forecast for ${destinationName}. Verify WEATHER_API_KEY in backend.`,
         ),
       );
     } finally {
@@ -35,8 +37,8 @@ export const TripWeatherTab = ({ trip }) => {
   };
 
   useEffect(() => {
-    if (trip.destination) fetchWeather();
-  }, [trip.destination]);
+    if (destinationName) fetchWeather();
+  }, [destinationName]);
 
   return (
     <div className="space-y-10">
@@ -46,7 +48,7 @@ export const TripWeatherTab = ({ trip }) => {
           Atmospheric Conditions
         </span>
         <h3 className="font-serif text-2xl font-bold text-[#202525]">
-          Weather Forecast for {trip.destination}
+          Weather Forecast for {destinationName}
         </h3>
         <p className="text-xs text-[#54433A] mt-1">
           Live meteorological reports from OpenWeather to help you pack
@@ -56,7 +58,7 @@ export const TripWeatherTab = ({ trip }) => {
 
       {loading ? (
         <LoadingState
-          message={`Observing atmospheric conditions in ${trip.destination}...`}
+          message={`Observing atmospheric conditions in ${destinationName}...`}
         />
       ) : error ? (
         <div className="p-8 bg-[#FFDAD6]/30 border border-[#BA1A1A]/30 rounded text-center">
