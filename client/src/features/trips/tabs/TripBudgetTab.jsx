@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 export const TripBudgetTab = ({ trip }) => {
+  const tripId = trip?.id || trip?._id;
   const [expenses, setExpenses] = useState([]);
   const [summary, setSummary] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,7 @@ export const TripBudgetTab = ({ trip }) => {
     currency: "INR",
     category: "Food",
     description: "",
-    date: trip.startDate
+    date: trip?.startDate
       ? trip.startDate.split("T")[0]
       : new Date().toISOString().split("T")[0],
   });
@@ -46,12 +47,13 @@ export const TripBudgetTab = ({ trip }) => {
   ];
 
   const fetchExpensesData = async () => {
+    if (!tripId) return;
     setLoading(true);
     setError(null);
     try {
       const [expRes, sumRes] = await Promise.all([
-        expensesApi.getByTrip(trip._id),
-        expensesApi.getSummary(trip._id),
+        expensesApi.getByTrip(tripId),
+        expensesApi.getSummary(tripId),
       ]);
       setExpenses(expRes.data?.data || expRes.data || []);
       setSummary(sumRes.data || []);
@@ -64,8 +66,8 @@ export const TripBudgetTab = ({ trip }) => {
   };
 
   useEffect(() => {
-    if (trip._id) fetchExpensesData();
-  }, [trip._id]);
+    if (tripId) fetchExpensesData();
+  }, [tripId]);
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
@@ -80,7 +82,7 @@ export const TripBudgetTab = ({ trip }) => {
     setFormLoading(true);
     try {
       await expensesApi.create({
-        trip: trip._id,
+        trip: tripId,
         amount: parsedAmount,
         currency: formData.currency,
         category: formData.category,
@@ -93,7 +95,7 @@ export const TripBudgetTab = ({ trip }) => {
         currency: "INR",
         category: "Food",
         description: "",
-        date: trip.startDate
+        date: trip?.startDate
           ? trip.startDate.split("T")[0]
           : new Date().toISOString().split("T")[0],
       });
@@ -248,7 +250,7 @@ export const TripBudgetTab = ({ trip }) => {
                 <tbody className="divide-y divide-[#EDE7DF]">
                   {expenses.map((exp) => (
                     <tr
-                      key={exp._id}
+                      key={exp.id || exp._id}
                       className="hover:bg-[#F7F4EE] transition-colors"
                     >
                       <td className="py-4 px-6 font-medium text-[#202525] whitespace-nowrap">
@@ -275,7 +277,7 @@ export const TripBudgetTab = ({ trip }) => {
                       <td className="py-4 px-6 text-center">
                         <button
                           type="button"
-                          onClick={() => handleDeleteExpense(exp._id)}
+                          onClick={() => handleDeleteExpense(exp.id || exp._id)}
                           className="text-[#899596] hover:text-[#BA1A1A] transition-colors p-1"
                           title="Delete entry"
                         >

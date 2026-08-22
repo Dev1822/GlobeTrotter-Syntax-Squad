@@ -64,11 +64,11 @@ exports.createExpense = async (req, res) => {
       });
     }
     if (
-      expenseDate < tripExists.startDate ||
-      expenseDate > tripExists.endDate
+      (tripExists.startDate && expenseDate < new Date(tripExists.startDate)) ||
+      (tripExists.endDate && expenseDate > new Date(tripExists.endDate))
     ) {
       return res.status(400).json({
-        msg: `Expense date must be between ${new Date(tripExists.startDate).toDateString()} and ${new Date(tripExists.endDate).toDateString()}.`,
+        msg: `Expense date must be between travel dates.`,
       });
     }
     
