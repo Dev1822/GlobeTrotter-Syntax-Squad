@@ -22,7 +22,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://travel-plans.onrender.com/api/:path*"
+      "destination": "https://globetrotter-syntax-squad.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
