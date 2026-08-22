@@ -122,22 +122,47 @@ const Activity = {
     },
 
     // --------------------------------------------------
-    // Bulk-update orderIndex (for drag-and-drop reorder)
+    // Bulk-update orderIndex & date (drag-and-drop reorder)
     // --------------------------------------------------
-    // Expects an array of { id, orderIndex } objects.
-    // Runs inside a transaction for atomicity.
+    // Accepts array of { activityId, newOrderIndex, newDate }
+    // Uses a single batch UPDATE with CASE...WHEN statements
+    // inside a SQL transaction for maximum efficiency (O(1) query).
     // --------------------------------------------------
-    async bulkUpdateOrder(items) {
+    async bulkReorderActivities(items) {
+        if (!items || items.length === 0) return;
+
+        const ids = items.map((item) => item.activityId);
+        const placeholders = ids.map(() => '?').join(',');
+
+        let orderIndexCases = '';
+        let dateCases = '';
+        const orderParams = [];
+        const dateParams = [];
+
+        for (const item of items) {
+            orderIndexCases += 'WHEN id = ? THEN ? ';
+            orderParams.push(item.activityId, item.newOrderIndex);
+
+            dateCases += 'WHEN id = ? THEN ? ';
+            dateParams.push(item.activityId, item.newDate);
+        }
+
+        const sql = `
+            UPDATE Activities
+            SET
+                orderIndex = CASE ${orderIndexCases} END,
+                date = CASE ${dateCases} END
+            WHERE id IN (${placeholders})
+        `;
+
+        const queryParams = [...orderParams, ...dateParams, ...ids];
+
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
-
-            const sql = `UPDATE Activities SET orderIndex = ? WHERE id = ?`;
-            for (const { id, orderIndex } of items) {
-                await conn.execute(sql, [orderIndex, id]);
-            }
-
+            const [result] = await conn.execute(sql, queryParams);
             await conn.commit();
+            return result;
         } catch (err) {
             await conn.rollback();
             throw err;

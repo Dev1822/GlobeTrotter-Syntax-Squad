@@ -172,18 +172,30 @@ exports.deleteActivity = async (req, res) => {
 // ---------------------------------------------------------
 // PATCH /api/activities/reorder
 // ---------------------------------------------------------
-// Body: { items: [{ id: 1, orderIndex: 0 }, { id: 2, orderIndex: 1 }, ...] }
+// Body: [
+//   { "activityId": 1, "newOrderIndex": 0, "newDate": "2026-09-15" },
+//   { "activityId": 2, "newOrderIndex": 1, "newDate": "2026-09-15" }
+// ]
 // ---------------------------------------------------------
 exports.reorderActivities = async (req, res) => {
     try {
-        const { items } = req.body;
+        const items = Array.isArray(req.body) ? req.body : req.body.items;
 
         if (!Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ error: 'items array is required.' });
+            return res.status(400).json({ error: 'Payload must be a non-empty array of activities to reorder.' });
         }
 
-        await Activity.bulkUpdateOrder(items);
-        return res.status(200).json({ message: 'Order updated.' });
+        // Validate payload fields
+        for (const item of items) {
+            if (!item.activityId || item.newOrderIndex === undefined || !item.newDate) {
+                return res.status(400).json({
+                    error: 'Each item must contain activityId, newOrderIndex, and newDate.',
+                });
+            }
+        }
+
+        await Activity.bulkReorderActivities(items);
+        return res.status(200).json({ message: 'Activities reordered successfully.' });
     } catch (err) {
         console.error('[ActivityController] reorderActivities error:', err);
         return res.status(500).json({ error: 'Failed to reorder activities.' });
