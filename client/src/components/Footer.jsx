@@ -97,10 +97,10 @@ export const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/contact"
+                  to="/how-it-works"
                   className="hover:text-white transition-colors duration-300 inline-flex items-center gap-1 group"
                 >
-                  Help & Support
+                  Help & Info
                   <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </li>
@@ -126,12 +126,6 @@ export const Footer = () => {
             &copy; {new Date().getFullYear()} GlobeTrotter. All rights reserved.
           </div>
           <div className="flex items-center space-x-8">
-            <Link
-              to="/contact"
-              className="hover:text-[#F7F4EE] transition-colors duration-300"
-            >
-              Contact
-            </Link>
             <Link
               to="/how-it-works"
               className="hover:text-[#F7F4EE] transition-colors duration-300"
