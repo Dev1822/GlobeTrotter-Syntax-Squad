@@ -99,6 +99,7 @@ exports.addItem = async (req, res) => {
     });
 
     list.items = items;
+    list.changed('items', true);
     await list.save();
 
     res.json(list);

@@ -33,6 +33,10 @@ Expense.belongsTo(User, { foreignKey: 'payerId', as: 'payer' });
 Trip.hasOne(PackingList, { foreignKey: 'tripId', as: 'packingList', onDelete: 'CASCADE' });
 PackingList.belongsTo(Trip, { foreignKey: 'tripId', as: 'trip' });
 
+// User <-> PackingList
+User.hasMany(PackingList, { foreignKey: 'userId', as: 'packingLists', onDelete: 'CASCADE' });
+PackingList.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 module.exports = {
   sequelize,
   User,
