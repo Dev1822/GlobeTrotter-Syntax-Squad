@@ -7,7 +7,12 @@ export const tripsApi = {
   create: (data) => apiClient.post("/trips", data),
   update: (id, data) => apiClient.put(`/trips/${id}`, data),
   delete: (id) => apiClient.delete(`/trips/${id}`),
+  addStop: (tripId, data) => apiClient.post(`/trips/${tripId}/stops`, data),
+  reorderStops: (tripId, stops) => apiClient.put(`/trips/${tripId}/stops/reorder`, { stops }),
+  addActivity: (stopId, data) => apiClient.post(`/trips/stops/${stopId}/activities`, data),
   generateShareLink: (id) => apiClient.post(`/trips/${id}/share`),
   toggleSharing: (id) => apiClient.put(`/trips/${id}/share-toggle`),
   getSharedTrip: (token) => apiClient.get(`/trips/share/${token}`),
 };
+
+export default tripsApi;
