@@ -73,9 +73,10 @@ export const TripDetailPage = () => {
 
   const handleShareClick = async () => {
     try {
+      const targetTripId = trip?.id || trip?._id || id;
       let token = trip.shareToken;
       if (!token) {
-        const res = await tripsApi.generateShareLink(trip._id);
+        const res = await tripsApi.generateShareLink(targetTripId);
         token = res.data.shareToken;
         setTrip((prev) => ({ ...prev, shareToken: token, shareEnabled: true }));
       }
@@ -84,6 +85,7 @@ export const TripDetailPage = () => {
       setIsShareModalOpen(true);
     } catch (err) {
       console.error("Failed to generate share link:", err);
+      alert(getErrorMessage(err, "Failed to generate share link."));
     }
   };
 
@@ -97,17 +99,20 @@ export const TripDetailPage = () => {
 
   const handleToggleSharing = async () => {
     try {
-      const res = await tripsApi.toggleSharing(trip._id);
+      const targetTripId = trip?.id || trip?._id || id;
+      const res = await tripsApi.toggleSharing(targetTripId);
       setTrip((prev) => ({ ...prev, shareEnabled: res.data.shareEnabled }));
     } catch (err) {
       console.error("Failed to toggle sharing:", err);
+      alert(getErrorMessage(err, "Failed to update trip sharing settings."));
     }
   };
 
   const handleDeleteTrip = async () => {
     setDeleteLoading(true);
     try {
-      await tripsApi.delete(trip._id);
+      const targetTripId = trip?.id || trip?._id || id;
+      await tripsApi.delete(targetTripId);
       navigate("/my-journey");
     } catch (err) {
       console.error("Failed to delete trip:", err);
@@ -295,7 +300,7 @@ export const TripDetailPage = () => {
           isOpen={isShareModalOpen}
           onClose={() => setIsShareModalOpen(false)}
           title="Share Journey Itinerary"
-          subtitle={`Generate a public view link for your ${destination} trip.`}
+          subtitle={`Generate a public view link for your ${destDetails?.name || "expedition"} trip.`}
         >
           <div className="space-y-6">
             <p className="text-xs text-[#54433A] leading-relaxed">

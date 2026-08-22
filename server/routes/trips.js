@@ -5,6 +5,7 @@ const auth = require("../middleware/auth");
 
 router.post("/", auth, tripController.createTrip);
 router.get("/", auth, tripController.getTrips);
+router.get("/share/:token", tripController.getSharedTrip);
 router.get("/:id", auth, tripController.getTrip);
 router.put("/:id", auth, tripController.updateTrip);
 router.delete("/:id", auth, tripController.deleteTrip);
@@ -15,6 +16,5 @@ router.post("/stops/:stopId/activities", auth, tripController.addActivity);
 
 router.post("/:id/share", auth, tripController.shareTrip);
 router.put("/:id/share-toggle", auth, tripController.toggleTripSharing);
-router.get("/share/:token", tripController.getSharedTrip);
 
 module.exports = router;
