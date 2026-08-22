@@ -1,68 +1,663 @@
+/* =========================================================
+   GlobeTrotter — Design System
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ---------------------------------------------------------
+   1. Design Tokens
+   --------------------------------------------------------- */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Palette */
+  --gt-bg-primary:    #0b0f19;
+  --gt-bg-secondary:  #111827;
+  --gt-bg-card:       rgba(17, 24, 39, 0.65);
+  --gt-bg-glass:      rgba(255, 255, 255, 0.04);
+  --gt-bg-hover:      rgba(255, 255, 255, 0.06);
+  --gt-bg-active:     rgba(99, 102, 241, 0.12);
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --gt-border:        rgba(255, 255, 255, 0.08);
+  --gt-border-accent: rgba(99, 102, 241, 0.35);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --gt-text-primary:   #f1f5f9;
+  --gt-text-secondary: #94a3b8;
+  --gt-text-muted:     #64748b;
+
+  --gt-accent:        #6366f1;
+  --gt-accent-light:  #818cf8;
+  --gt-accent-glow:   rgba(99, 102, 241, 0.25);
+
+  --gt-success:       #22c55e;
+  --gt-warning:       #f59e0b;
+  --gt-danger:        #ef4444;
+
+  --gt-gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  --gt-gradient-card: linear-gradient(160deg, rgba(99,102,241,0.08) 0%, transparent 60%);
+  --gt-gradient-shine: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
+
+  /* Typography */
+  --gt-font:         'Inter', system-ui, -apple-system, sans-serif;
+  --gt-font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Radii */
+  --gt-radius-sm:  8px;
+  --gt-radius-md:  12px;
+  --gt-radius-lg:  16px;
+  --gt-radius-xl:  20px;
+  --gt-radius-pill: 9999px;
+
+  /* Shadows */
+  --gt-shadow-sm:  0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.24);
+  --gt-shadow-md:  0 4px 14px rgba(0,0,0,0.35);
+  --gt-shadow-lg:  0 10px 40px rgba(0,0,0,0.45);
+  --gt-shadow-glow: 0 0 20px var(--gt-accent-glow);
+
+  /* Transitions */
+  --gt-ease:       cubic-bezier(0.4, 0, 0.2, 1);
+  --gt-duration:   220ms;
+
+  /* Layout */
+  --gt-sidebar-w:  280px;
+  --gt-header-h:   64px;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* ---------------------------------------------------------
+   2. Reset & Base
+   --------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-a:hover {
-  color: #535bf2;
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
+  font-family: var(--gt-font);
+  background: var(--gt-bg-primary);
+  color: var(--gt-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
   display: flex;
-  place-items: center;
-  min-width: 320px;
+  flex-direction: column;
+}
+
+/* ---------------------------------------------------------
+   3. Scrollbar
+   --------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--gt-radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ---------------------------------------------------------
+   4. Utility Classes
+   --------------------------------------------------------- */
+.gt-glass {
+  background: var(--gt-bg-glass);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--gt-border);
+}
+
+.gt-card {
+  background: var(--gt-bg-card);
+  border: 1px solid var(--gt-border);
+  border-radius: var(--gt-radius-lg);
+  box-shadow: var(--gt-shadow-sm);
+  transition: box-shadow var(--gt-duration) var(--gt-ease),
+              border-color var(--gt-duration) var(--gt-ease),
+              transform var(--gt-duration) var(--gt-ease);
+}
+.gt-card:hover {
+  box-shadow: var(--gt-shadow-md);
+  border-color: var(--gt-border-accent);
+}
+
+/* ---------------------------------------------------------
+   5. Animations
+   --------------------------------------------------------- */
+@keyframes gt-fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes gt-slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes gt-scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes gt-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+@keyframes gt-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes gt-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+.gt-animate-fade   { animation: gt-fadeIn 0.4s var(--gt-ease) both; }
+.gt-animate-slide  { animation: gt-slideIn 0.35s var(--gt-ease) both; }
+.gt-animate-scale  { animation: gt-scaleIn 0.3s var(--gt-ease) both; }
+
+/* Staggered children */
+.gt-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.gt-stagger > *:nth-child(2) { animation-delay: 50ms; }
+.gt-stagger > *:nth-child(3) { animation-delay: 100ms; }
+.gt-stagger > *:nth-child(4) { animation-delay: 150ms; }
+.gt-stagger > *:nth-child(5) { animation-delay: 200ms; }
+.gt-stagger > *:nth-child(6) { animation-delay: 250ms; }
+.gt-stagger > *:nth-child(7) { animation-delay: 300ms; }
+
+/* ---------------------------------------------------------
+   6. App Layout
+   --------------------------------------------------------- */
+.app-layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* ---------------------------------------------------------
+   7. Top Header
+   --------------------------------------------------------- */
+.app-header {
+  height: var(--gt-header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--gt-border);
+  background: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-header__logo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  background: var(--gt-gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.app-header__badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gt-accent-light);
+  background: var(--gt-accent-glow);
+  padding: 2px 8px;
+  border-radius: var(--gt-radius-pill);
+}
+
+.app-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------------------------------------------------------
+   8. View Toggle
+   --------------------------------------------------------- */
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: var(--gt-bg-glass);
+  border: 1px solid var(--gt-border);
+  border-radius: var(--gt-radius-pill);
+}
+
+.view-toggle__btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: var(--gt-radius-pill);
+  font-size: 0.8rem;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-family: var(--gt-font);
+  color: var(--gt-text-secondary);
+  background: transparent;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all var(--gt-duration) var(--gt-ease);
 }
-button:hover {
-  border-color: #646cff;
+.view-toggle__btn:hover {
+  color: var(--gt-text-primary);
+  background: var(--gt-bg-hover);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.view-toggle__btn--active {
+  color: #fff;
+  background: var(--gt-accent);
+  box-shadow: 0 2px 8px var(--gt-accent-glow);
+}
+.view-toggle__btn--active:hover {
+  background: var(--gt-accent-light);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.view-toggle__icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* ---------------------------------------------------------
+   9. Itinerary Builder — Main Area
+   --------------------------------------------------------- */
+.itinerary {
+  flex: 1;
+  padding: 28px 32px 40px;
+}
+
+.itinerary__title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.itinerary__title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.itinerary__subtitle {
+  color: var(--gt-text-secondary);
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.itinerary__stats {
+  display: flex;
+  gap: 20px;
+}
+
+.itinerary__stat {
+  text-align: center;
+}
+
+.itinerary__stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: var(--gt-gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.itinerary__stat-label {
+  font-size: 0.7rem;
+  color: var(--gt-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---------------------------------------------------------
+   10. List View
+   --------------------------------------------------------- */
+.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.day-group {
+  animation: gt-fadeIn 0.45s var(--gt-ease) both;
+}
+
+.day-group__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--gt-border);
+}
+
+.day-group__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--gt-radius-md);
+  background: var(--gt-gradient-hero);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  box-shadow: 0 3px 12px var(--gt-accent-glow);
+}
+
+.day-group__info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.day-group__info span {
+  font-size: 0.78rem;
+  color: var(--gt-text-muted);
+}
+
+.day-group__activities {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 56px;
+  min-height: 50px;
+  border-radius: var(--gt-radius-md);
+  transition: background var(--gt-duration) var(--gt-ease);
+}
+
+.day-group__activities--over {
+  background: var(--gt-bg-active);
+  outline: 2px dashed var(--gt-accent);
+  outline-offset: -2px;
+}
+
+.day-group__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  border: 1px dashed var(--gt-border);
+  border-radius: var(--gt-radius-md);
+  color: var(--gt-text-muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------
+   11. Activity Card
+   --------------------------------------------------------- */
+.activity-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--gt-bg-card);
+  background-image: var(--gt-gradient-card);
+  border: 1px solid var(--gt-border);
+  border-radius: var(--gt-radius-md);
+  cursor: grab;
+  transition: all var(--gt-duration) var(--gt-ease);
+  animation: gt-fadeIn 0.35s var(--gt-ease) both;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.activity-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gt-gradient-shine);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.4s var(--gt-ease);
+  pointer-events: none;
+}
+
+.activity-card:hover {
+  border-color: var(--gt-border-accent);
+  box-shadow: var(--gt-shadow-md);
+  transform: translateY(-1px);
+}
+
+.activity-card:hover::after {
+  opacity: 1;
+  animation: gt-shimmer 2s linear infinite;
+}
+
+.activity-card--dragging {
+  opacity: 0.4;
+  transform: scale(0.98);
+  cursor: grabbing;
+}
+
+.activity-card__drag-handle {
+  display: flex;
+  align-items: center;
+  color: var(--gt-text-muted);
+  flex-shrink: 0;
+  transition: color var(--gt-duration) var(--gt-ease);
+}
+.activity-card:hover .activity-card__drag-handle {
+  color: var(--gt-accent-light);
+}
+
+.activity-card__icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--gt-radius-sm);
+  background: var(--gt-bg-glass);
+  border: 1px solid var(--gt-border);
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.activity-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-card__name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 3px;
+  font-size: 0.75rem;
+  color: var(--gt-text-muted);
+}
+
+.activity-card__time,
+.activity-card__stop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.activity-card__cost {
+  margin-left: auto;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gt-success);
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------
+   12. DnD Overlay (the ghost card while dragging)
+   --------------------------------------------------------- */
+.dnd-overlay-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--gt-bg-secondary);
+  border: 2px solid var(--gt-accent);
+  border-radius: var(--gt-radius-md);
+  box-shadow: var(--gt-shadow-lg), var(--gt-shadow-glow);
+  cursor: grabbing;
+  opacity: 0.95;
+  min-width: 340px;
+  max-width: 520px;
+}
+
+.dnd-overlay-card .activity-card__icon {
+  background: var(--gt-accent-glow);
+  border-color: var(--gt-accent);
+}
+
+/* ---------------------------------------------------------
+   13. Calendar View
+   --------------------------------------------------------- */
+.calendar-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.calendar-day {
+  background: var(--gt-bg-card);
+  border: 1px solid var(--gt-border);
+  border-radius: var(--gt-radius-lg);
+  overflow: hidden;
+  animation: gt-scaleIn 0.4s var(--gt-ease) both;
+  transition: border-color var(--gt-duration) var(--gt-ease),
+              box-shadow var(--gt-duration) var(--gt-ease);
+}
+
+.calendar-day:hover {
+  border-color: var(--gt-border-accent);
+}
+
+.calendar-day--over {
+  border-color: var(--gt-accent);
+  box-shadow: var(--gt-shadow-glow);
+}
+
+.calendar-day__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--gt-gradient-card);
+  border-bottom: 1px solid var(--gt-border);
+}
+
+.calendar-day__date {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.calendar-day__label {
+  font-size: 0.72rem;
+  color: var(--gt-text-muted);
+}
+
+.calendar-day__count {
+  font-size: 0.7rem;
+  color: var(--gt-text-secondary);
+  background: var(--gt-bg-glass);
+  border: 1px solid var(--gt-border);
+  padding: 2px 8px;
+  border-radius: var(--gt-radius-pill);
+}
+
+.calendar-day__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  min-height: 100px;
+  transition: background var(--gt-duration) var(--gt-ease);
+}
+
+.calendar-day__body--over {
+  background: var(--gt-bg-active);
+}
+
+.calendar-day__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  color: var(--gt-text-muted);
+  font-size: 0.78rem;
+  font-style: italic;
+  border: 1px dashed var(--gt-border);
+  border-radius: var(--gt-radius-sm);
+}
+
+/* Calendar cards are more compact */
+.calendar-day .activity-card {
+  padding: 10px 12px;
+}
+.calendar-day .activity-card__icon {
+  width: 30px;
+  height: 30px;
+  font-size: 0.85rem;
+}
+.calendar-day .activity-card__name {
+  font-size: 0.82rem;
+}
+.calendar-day .activity-card__meta {
+  font-size: 0.7rem;
+}
+
+/* ---------------------------------------------------------
+   14. Responsive
+   --------------------------------------------------------- */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 16px;
   }
-  a:hover {
-    color: #747bff;
+  .itinerary {
+    padding: 20px 16px;
   }
-  button {
-    background-color: #f9f9f9;
+  .day-group__activities {
+    padding-left: 0;
+  }
+  .calendar-view {
+    grid-template-columns: 1fr;
+  }
+  .itinerary__title-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 }
