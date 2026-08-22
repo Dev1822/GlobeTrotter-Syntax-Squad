@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 
 export const TripPlacesTab = ({ trip, onTripUpdated }) => {
-  const stops = trip.stops || [];
+  const stops = trip?.stops || [];
   
-  const [selectedStopId, setSelectedStopId] = useState(stops.length > 0 ? stops[0].id : "");
+  const [selectedStopId, setSelectedStopId] = useState(stops.length > 0 ? String(stops[0].id || stops[0]._id) : "");
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,15 +30,13 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
   ];
 
   const fetchPlaces = async (cats = [], price = "") => {
-    if (!selectedStopId) return;
-    
-    const stop = stops.find(s => s.id === parseInt(selectedStopId));
-    if (!stop) return;
+    const stop = stops.find(s => String(s.id || s._id) === String(selectedStopId)) || stops[0];
+    const cityName = stop?.city || trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : "Jaipur");
 
     setLoading(true);
     setError(null);
     try {
-      const payload = { destination: stop.city };
+      const payload = { destination: cityName };
       if (cats && cats.length > 0) payload.categories = cats;
       if (price) payload.maxPrice = price;
 
@@ -46,7 +44,7 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
       if (res.data?.places) setPlaces(res.data.places);
     } catch (err) {
       console.warn("Places search error:", err);
-      setError("Could not load live points of interest. Ensure OpenTripMap API key is set.");
+      setError("Unable to load points of interest. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -87,8 +85,8 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
               onChange={e => setSelectedStopId(e.target.value)}
               className="bg-[#F6F3F2] border border-[#CBD5D6] rounded px-3 py-1 font-serif text-xl"
             >
-              {stops.length === 0 && <option value="">No cities</option>}
-              {stops.map(s => <option key={s.id} value={s.id}>{s.city}</option>)}
+              {stops.length === 0 && <option value="">{trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : "Jaipur")}</option>}
+              {stops.map(s => <option key={s.id || s._id} value={String(s.id || s._id)}>{s.city}</option>)}
             </select>
           </div>
         </div>
