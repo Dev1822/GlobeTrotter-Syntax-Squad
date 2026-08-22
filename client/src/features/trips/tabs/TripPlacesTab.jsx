@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { placesApi } from "../../../services/api/placesApi";
 import { tripsApi } from "../../../services/api/tripsApi";
+import { getErrorMessage } from "../../../services/api/client";
 import Badge from "../../../components/Badge";
 import Button from "../../../components/Button";
 import LoadingState from "../../../components/LoadingState";
@@ -56,17 +57,47 @@ export const TripPlacesTab = ({ trip, onTripUpdated }) => {
 
   const handleAddToItinerary = async (place) => {
     try {
+      let targetStopId = selectedStopId;
+      let currentStops = [...stops];
+
+      // Auto-create stop if trip has no stops yet
+      if (!targetStopId || currentStops.length === 0) {
+        const cityName = trip?.destination || (trip?.name && !trip.name.toLowerCase().includes("new trip") ? trip.name : "Jaipur");
+        const tripId = trip.id || trip._id;
+        const newStopRes = await tripsApi.addStop(tripId, { city: cityName });
+        const newStop = newStopRes.data;
+        currentStops.push(newStop);
+        targetStopId = String(newStop.id || newStop._id);
+        setSelectedStopId(targetStopId);
+      }
+
+      const activeStop = currentStops.find(s => String(s.id || s._id) === String(targetStopId)) || currentStops[0];
+
       const payload = {
         name: place.name,
         location: place.category,
         cost: place.price || 0,
+        date: activeStop?.startDate || trip?.startDate || new Date().toISOString().split("T")[0],
         notes: `Added from Activity Search. ${place.bookingLinks?.googleMaps || ''}`
       };
-      const res = await tripsApi.addActivity(selectedStopId, payload);
-      alert('Added to itinerary!');
-      // Update trip state if needed via onTripUpdated...
-    } catch(err) {
-      alert('Failed to add to itinerary');
+
+      const res = await tripsApi.addActivity(targetStopId, payload);
+      
+      const updatedStops = currentStops.map(stop => {
+        if (String(stop.id || stop._id) === String(targetStopId)) {
+          return { ...stop, activities: [...(stop.activities || []), res.data] };
+        }
+        return stop;
+      });
+
+      if (onTripUpdated) {
+        onTripUpdated({ ...trip, stops: updatedStops });
+      }
+
+      alert(`"${place.name}" added to your itinerary! Check the Itinerary tab to view or reschedule it.`);
+    } catch (err) {
+      console.error("Failed to add activity:", err);
+      alert(getErrorMessage(err, "Failed to add activity to itinerary"));
     }
   };
 

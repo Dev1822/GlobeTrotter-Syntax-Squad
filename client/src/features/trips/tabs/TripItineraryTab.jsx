@@ -25,7 +25,7 @@ export const TripItineraryTab = ({ trip, onTripUpdated }) => {
       const res = await tripsApi.addActivity(selectedStopId, form);
       // Update local state
       const updatedStops = stops.map(stop => {
-        if (stop.id === parseInt(selectedStopId)) {
+        if (String(stop.id || stop._id) === String(selectedStopId)) {
           return { ...stop, activities: [...(stop.activities || []), res.data] };
         }
         return stop;
@@ -150,7 +150,7 @@ export const TripItineraryTab = ({ trip, onTripUpdated }) => {
               <label className="text-xs font-semibold text-[#54433A]">Select City Stop</label>
               <select className="w-full bg-[#FFFFFF] border border-[#CBD5D6] rounded px-4 py-2 text-sm" value={selectedStopId} onChange={e => setSelectedStopId(e.target.value)} required>
                 <option value="">-- Choose Stop --</option>
-                {stops.map(s => <option key={s.id} value={s.id}>{s.city}</option>)}
+                {stops.map(s => <option key={s.id || s._id} value={String(s.id || s._id)}>{s.city}</option>)}
               </select>
             </div>
             <FormField label="Activity Name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
