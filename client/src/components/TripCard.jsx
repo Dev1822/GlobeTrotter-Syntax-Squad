@@ -1,11 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
-import Badge from "./Badge";
+import { getDestinationDetails } from "../features/destinations/destinationData";
 
 export const TripCard = ({ trip }) => {
   const {
+    id,
     _id,
+    name,
     destination,
     startDate,
     endDate,
@@ -13,11 +15,22 @@ export const TripCard = ({ trip }) => {
     status = "planned",
     images = [],
     description,
+    stops = [],
   } = trip;
 
-  const fallbackImage =
-    "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80";
-  const imageSrc = images && images.length > 0 ? images[0] : fallbackImage;
+  const tripId = id || _id;
+  const destinationCity =
+    destination ||
+    (stops && stops[0]?.city) ||
+    (name && !name.toLowerCase().includes("new trip") ? name : null) ||
+    "Udaipur";
+
+  const destDetails = getDestinationDetails(destinationCity);
+  const fallbackImage = destDetails.heroImage;
+  const imageSrc =
+    images && images.length > 0
+      ? images[0]
+      : (trip?.destinationImageUrl || fallbackImage);
 
   const formatDate = (d) => {
     if (!d) return "";
@@ -113,7 +126,7 @@ export const TripCard = ({ trip }) => {
 
         <div className="mt-6 pt-4 border-t border-[#EDE7DF] flex items-center justify-end">
           <Link
-            to={`/trips/${_id}`}
+            to={`/trips/${tripId}`}
             className="inline-flex items-center text-xs font-semibold text-[#163A3D] group-hover:text-[#204F53] transition-colors"
           >
             <span>Open Journey Overview</span>

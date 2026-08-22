@@ -6,6 +6,8 @@ import LoadingState from "../../components/LoadingState";
 import { ArrowRight, Plus, MapPin, Calendar, Compass } from "lucide-react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
+import { getDestinationDetails } from "../destinations/destinationData";
+
 /* ─── SCROLL REVEAL WRAPPER ─── */
 const ScrollReveal = ({ children, className = "", delay = 0, direction = "up" }) => {
   const ref = useRef(null);
@@ -204,8 +206,9 @@ export const MyJourneyPage = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={
-                  upcomingTrip.destinationImageUrl ||
-                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCPK7Kb014ApSbqJiWUFvuGCH4yM7yCOpPNisGK8_FTjqE1hssMdn34_nB412kz_X3WHnEFvMbz5T6r2SOz_lfv5m7YrXvf5Xgmrqm9f1zNPTvgPj2J6JpEbC5kx0payiVFuEXDlXDb1uH_zlzQHOciJF4rSHIWK0Lbh6-rMGSleYJr9sIXrFl3fNlVaS_qTQI8Ft0FEZkApiwAhVemWiN6K0vp9y38nnXRfjU_t0Z0LRVhtrdmtXK3dA"
+                  upcomingTrip.images && upcomingTrip.images.length > 0
+                    ? upcomingTrip.images[0]
+                    : (upcomingTrip.destinationImageUrl || getDestinationDetails(upcomingTrip.destination || upcomingTrip.name).heroImage)
                 }
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
@@ -312,8 +315,9 @@ export const MyJourneyPage = () => {
                         whileHover={{ scale: 1.08 }}
                         transition={{ duration: 1.2, ease: "easeOut" }}
                         src={
-                          trip.destinationImageUrl ||
-                          "https://lh3.googleusercontent.com/aida-public/AB6AXuCop9_SUGmoIs8xdYJa5NPHUgJmnmEwh8ERGIz_QNasOM6UHaTVahV3K1wOz6L2u3SROQd2UPS_fZc2TPnz--AyMWSxPG3woCr7fU38exkAkmaezXjYNk2YBb0bxobTclTFcMeHWXppUx_SQlXzc2IEessiDKzephcx0bQRv1USw3ih39tNNKcSoCLdcqwM7m2tea60cEEaxzQhlWEjJQbkRuWRMlgXFeapJ_dr19cRKIzOMkYHwZ_XHQ"
+                          trip.images && trip.images.length > 0
+                            ? trip.images[0]
+                            : (trip.destinationImageUrl || getDestinationDetails(trip.destination || trip.name).heroImage)
                         }
                       />
                       <div className="absolute inset-0 scrim-bottom opacity-90 transition-opacity duration-300 group-hover:opacity-100" />

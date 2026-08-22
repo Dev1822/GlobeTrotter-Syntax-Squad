@@ -17,6 +17,8 @@ import {
   Share2,
 } from "lucide-react";
 
+import { getDestinationDetails } from "../destinations/destinationData";
+
 export const SharedTripPage = () => {
   const { token } = useParams();
   const [trip, setTrip] = useState(null);
@@ -75,6 +77,7 @@ export const SharedTripPage = () => {
   }
 
   const {
+    name,
     destination,
     startDate,
     endDate,
@@ -85,12 +88,21 @@ export const SharedTripPage = () => {
     accommodation,
     transportation,
     images = [],
+    stops = [],
   } = trip;
+
+  const destinationCity =
+    destination ||
+    (stops && stops[0]?.city) ||
+    (name && !name.toLowerCase().includes("new trip") ? name : null) ||
+    "Udaipur";
+
+  const destDetails = getDestinationDetails(destinationCity);
 
   const coverImage =
     images && images.length > 0
       ? images[0]
-      : "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1600&q=85";
+      : (trip?.destinationImageUrl || destDetails.heroImage);
 
   const formatDate = (d) => {
     if (!d) return "";
