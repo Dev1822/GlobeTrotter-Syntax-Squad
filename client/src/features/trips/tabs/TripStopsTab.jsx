@@ -21,8 +21,11 @@ import FormField from '../../../components/FormField';
 import Modal from '../../../components/Modal';
 import { GripVertical, Plus, Calendar, MapPin } from 'lucide-react';
 
+import { getErrorMessage } from '../../../services/api/client';
+
 const SortableStopItem = ({ stop }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: stop.id });
+  const stopId = stop.id || stop._id;
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: stopId });
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
@@ -68,16 +71,17 @@ export const TripStopsTab = ({ trip, onTripUpdated }) => {
 
   const handleDragEnd = async (event) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
-      const oldIndex = stops.findIndex(s => s.id === active.id);
-      const newIndex = stops.findIndex(s => s.id === over.id);
+    if (active && over && active.id !== over.id) {
+      const oldIndex = stops.findIndex(s => (s.id || s._id) === active.id);
+      const newIndex = stops.findIndex(s => (s.id || s._id) === over.id);
       const newStops = arrayMove(stops, oldIndex, newIndex).map((s, idx) => ({ ...s, orderIndex: idx }));
       
       // Optimistically update
       onTripUpdated({ ...trip, stops: newStops });
       
       try {
-        await tripsApi.reorderStops(trip.id, newStops);
+        const tripId = trip.id || trip._id;
+        await tripsApi.reorderStops(tripId, newStops);
       } catch (err) {
         console.error("Failed to save reorder", err);
       }
@@ -88,12 +92,18 @@ export const TripStopsTab = ({ trip, onTripUpdated }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await tripsApi.addStop(trip.id, { city, startDate, endDate });
+      const tripId = trip.id || trip._id;
+      const res = await tripsApi.addStop(tripId, {
+        city,
+        startDate: startDate && startDate.trim() ? startDate : undefined,
+        endDate: endDate && endDate.trim() ? endDate : undefined
+      });
       onTripUpdated({ ...trip, stops: [...stops, res.data] });
       setIsAddOpen(false);
       setCity(''); setStartDate(''); setEndDate('');
     } catch (err) {
-      console.error(err);
+      console.error("Add stop failed:", err);
+      alert(getErrorMessage(err, "Failed to add stop to journey."));
     } finally {
       setLoading(false);
     }
@@ -116,7 +126,7 @@ export const TripStopsTab = ({ trip, onTripUpdated }) => {
         <div className="text-center py-12 text-[#54433A]">No cities added yet.</div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={stops.map(s => s.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext items={stops.map(s => s.id || s._id)} strategy={verticalListSortingStrategy}>
             <div className="mt-6">
               {stops.map(stop => (
                 <SortableStopItem key={stop.id} stop={stop} />
